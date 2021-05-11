@@ -14,32 +14,32 @@ using System.Threading.Tasks;
 
 namespace ELearn.Presentation.Controllers.Site.V1.Users
 {
-    [Authorize(Policy = "RequireStudentRole")]
+    [Authorize(Policy = "RequireTeacherRole")]
     [ApiExplorerSettings(GroupName = "v1_Site")]
     [ApiController]
-    public class StudentController : ControllerBase
+    public class TeacherController : ControllerBase
     {
         private readonly IUnitOfWork<DatabaseContext> _db;
         private readonly IMapper _mapper;
 
-        public StudentController(IUnitOfWork<DatabaseContext> db, IMapper mapper)
+        public TeacherController(IUnitOfWork<DatabaseContext> db, IMapper mapper)
         {
             _db = db;
             _mapper = mapper;
         }
 
-        [HttpGet(ApiV1Routes.Student.GetStudent, Name = nameof(GetStudent))]
+        [HttpGet(ApiV1Routes.Teacher.GetTeacher, Name = nameof(GetTeacher))]
         [ServiceFilter(typeof(UserCheckIdFilter))]
-        public async Task<IActionResult> GetStudent(string id)
+        public async Task<IActionResult> GetTeacher(string id)
         {
-            var user = await _db.UserRepository.GetAsync(expression: u => u.Id == id, includeEntity: "Student");
+            var user = await _db.UserRepository.GetAsync(expression: u => u.Id == id, includeEntity: "Teacher");
 
-            if (user == null || user.Student == null)
+            if (user == null || user.Teacher == null)
             {
                 return NotFound();
             }
 
-            var mappedUser = _mapper.Map<UserForStudentDetailedDto>(user);
+            var mappedUser = _mapper.Map<UserForTeacherDetailedDto>(user);
 
             return Ok(mappedUser);
         }

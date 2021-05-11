@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -55,16 +56,75 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
                 await _db.StudentRepository.AddAsync(student);
                 await _db.SaveAsync();
 
-                var userAddRole = _userManager.FindByNameAsync(user.UserName).Result;
+                var userAddRole = await _userManager.FindByNameAsync(user.UserName);
                 await _userManager.AddToRolesAsync(userAddRole, new[] { "Student" });
 
                 userAddRole.StudentId = student.Id;
                 _db.UserRepository.Update(userAddRole);
                 await _db.SaveAsync();
 
-                var resultUser = await _db.UserRepository.GetAsync(expression: s => s.Id == userAddRole.Id, includeEntity: "Student");
+                var resultUser = await _db.UserRepository.GetAsync(expression: u => u.Id == userAddRole.Id, includeEntity: "Student");
                 var registeredUser = _mapper.Map<UserForStudentDetailedDto>(resultUser);
                 return CreatedAtRoute("GetStudent", new { controller = "Student", id = userAddRole.Id }, registeredUser);
+            }
+            else if (result.Errors.Any())
+            {
+                var returnMessage = new ErrorList();
+                foreach (var error in result.Errors)
+                {
+                    returnMessage.Errors.Add(error.Description);
+                }
+                return BadRequest(returnMessage);
+            }
+            else
+            {
+                return BadRequest("خطا در ثبت نام");
+            }
+        }
+
+        [HttpPost(ApiV1Routes.Auth.RegisterTeacher)]
+        public async Task<IActionResult> RegisterTeacher(UserForRegisterTeacherDto dto)
+        {
+            var user = _mapper.Map<User>(dto);
+            PersianCalendar pc = new PersianCalendar();
+
+            DateTime birthdate = new DateTime();
+            try
+            {
+                birthdate = pc.ToDateTime(1400, 12, 30, 0, 0, 0, 0);
+            }
+            catch (Exception)
+            {
+                return BadRequest("تاریخ تولد معتیر نیست");
+            }
+
+            var result = await _userManager.CreateAsync(user, dto.Password);
+
+            if (result.Succeeded)
+            {
+                var teacher = new Teacher()
+                {
+                    BirthDate = birthdate,
+                    Degree = dto.Degree,
+                    Phone = dto.Phone,
+                    Address = dto.Address,
+                    Description = dto.Description,
+                    Status = 1,
+                    UserId = user.Id
+                };
+                await _db.TeacherRepository.AddAsync(teacher);
+                await _db.SaveAsync();
+
+                var userAddRole = await _userManager.FindByNameAsync(user.UserName);
+                await _userManager.AddToRolesAsync(userAddRole, new[] { "Teacher" });
+
+                userAddRole.TeacherId = teacher.Id;
+                _db.UserRepository.Update(userAddRole);
+                await _db.SaveAsync();
+
+                var resultUser = await _db.UserRepository.GetAsync(expression: s => s.Id == userAddRole.Id, includeEntity: "Teacher");
+                var registeredUser = _mapper.Map<UserForTeacherDetailedDto>(resultUser);
+                return CreatedAtRoute("GetTeacher", new { controller = "Teacher", id = userAddRole.Id }, registeredUser);
             }
             else if (result.Errors.Any())
             {

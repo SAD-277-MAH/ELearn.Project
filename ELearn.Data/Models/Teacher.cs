@@ -19,7 +19,6 @@ namespace ELearn.Data.Models
 
         [Display(Name = "تاریخ تولد")]
         [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
-        [MaxLength(50, ErrorMessage = "مقدار {0} نمی تواند بیشتر از {1} باشد")]
         public DateTime BirthDate { get; set; }
 
         [Display(Name = "آخرین مدرک تحصیلی")]
@@ -34,12 +33,10 @@ namespace ELearn.Data.Models
 
         [Display(Name = "آدرس")]
         [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
-        [MaxLength(50, ErrorMessage = "مقدار {0} نمی تواند بیشتر از {1} باشد")]
         public string Address { get; set; }
 
         [Display(Name = "توضیحات")]
         [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
-        [MaxLength(50, ErrorMessage = "مقدار {0} نمی تواند بیشتر از {1} باشد")]
         public string Description { get; set; }
 
         [Display(Name = "وضعیت مدارک")]

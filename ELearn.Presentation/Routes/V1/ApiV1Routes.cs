@@ -18,9 +18,13 @@ namespace ELearn.Presentation.Routes.V1
         #region AuthRoutes
         public static class Auth
         {
-            // /api/v1/site/panel/auth/registerstudent
+            // /api/v1/site/panel/auth/register/student
             // POST
-            public const string RegisterStudent = BaseSitePanel + "/auth/registerstudent";
+            public const string RegisterStudent = BaseSitePanel + "/auth/register/student";
+
+            // /api/v1/site/panel/auth/register/teacher
+            // POST
+            public const string RegisterTeacher = BaseSitePanel + "/auth/register/teacher";
 
             // /api/v1/site/panel/Auth/login
             // POST
@@ -34,6 +38,15 @@ namespace ELearn.Presentation.Routes.V1
             // /api/v1/site/panel/students/{id}
             // GET
             public const string GetStudent = BaseSitePanel + "/students/{id}";
+        }
+        #endregion
+
+        #region TeacherRoutes
+        public static class Teacher
+        {
+            // /api/v1/site/panel/teachers/{id}
+            // GET
+            public const string GetTeacher = BaseSitePanel + "/teachers/{id}";
         }
         #endregion
     }

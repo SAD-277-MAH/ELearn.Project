@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace ELearn.Common.Extentions
@@ -12,6 +13,12 @@ namespace ELearn.Common.Extentions
             response.Headers.Add("App-Error", message);
             response.Headers.Add("Access-Control-Expose-Headers", "App-Error");
             response.Headers.Add("Access-Control-Allow-Origin", "*");
+        }
+
+        public static string ToShamsiDate(this DateTime dateTime)
+        {
+            PersianCalendar pc = new PersianCalendar();
+            return $"{pc.GetYear(dateTime)}/{pc.GetMonth(dateTime)}/{pc.GetDayOfMonth(dateTime)}";
         }
     }
 }
