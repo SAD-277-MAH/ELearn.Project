@@ -42,6 +42,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
         public async Task<IActionResult> RegisterStudent(UserForRegisterStudentDto dto)
         {
             var user = _mapper.Map<User>(dto);
+            user.PhotoUrl = "https://res.cloudinary.com/mahsad/image/upload/v1598432094/profile.png";
 
             var result = await _userManager.CreateAsync(user, dto.Password);
 
@@ -86,8 +87,9 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
         public async Task<IActionResult> RegisterTeacher(UserForRegisterTeacherDto dto)
         {
             var user = _mapper.Map<User>(dto);
-            PersianCalendar pc = new PersianCalendar();
+            user.PhotoUrl = "https://res.cloudinary.com/mahsad/image/upload/v1598432094/profile.png";
 
+            PersianCalendar pc = new PersianCalendar();
             DateTime birthdate = new DateTime();
             try
             {

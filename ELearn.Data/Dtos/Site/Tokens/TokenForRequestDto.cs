@@ -13,7 +13,7 @@ namespace ELearn.Data.Dtos.Site.Tokens
         public string ClientId { get; set; }
 
         [Required]
-        [EmailAddress(ErrorMessage = "ایمیل وارد شده صحیح نمی‌باشد")]
+        [Phone(ErrorMessage = "شماره تلفن وارد شده صحیح نمی‌باشد")]
         public string UserName { get; set; }
 
         public string Password { get; set; }

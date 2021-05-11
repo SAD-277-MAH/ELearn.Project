@@ -4,6 +4,7 @@ using ELearn.Data.Context;
 using ELearn.Data.Dtos.Site.Users;
 using ELearn.Presentation.Routes.V1;
 using ELearn.Repo.Infrastructure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

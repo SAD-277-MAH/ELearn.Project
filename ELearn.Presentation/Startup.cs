@@ -1,5 +1,8 @@
 using AutoMapper;
 using ELearn.Common.Extentions;
+using ELearn.Common.Filters;
+using ELearn.Common.Helpers.Interface;
+using ELearn.Common.Helpers.Service;
 using ELearn.Data.Context;
 using ELearn.Data.Models;
 using ELearn.Repo.Infrastructure;
@@ -65,22 +68,25 @@ namespace ELearn.Presentation
                 options.Password.RequiredLength = 4;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.MaxFailedAccessAttempts = 5;
-                options.SignIn.RequireConfirmedAccount = true;
             }).AddEntityFrameworkStores<DatabaseContext>().AddDefaultTokenProviders().AddErrorDescriber<PersianIdentityErrorDescriber>();
 
             var tokenSettings = Configuration.GetSection("TokenSettings").Get<TokenSettings>();
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            services.AddAuthentication(option =>
+            {
+                option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
                 .AddJwtBearer(option =>
                 {
                     option.TokenValidationParameters = new TokenValidationParameters()
                     {
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(tokenSettings.Secret)),
-                        ValidateIssuer = false,
-                        //ValidIssuer = tokenSettings.Site,
-                        ValidateAudience = false,
-                        //ValidAudience = tokenSettings.Audience,
-                        //ClockSkew = TimeSpan.Zero
+                        ValidateIssuer = true,
+                        ValidIssuer = tokenSettings.Site,
+                        ValidateAudience = true,
+                        ValidAudience = tokenSettings.Audience,
+                        ClockSkew = TimeSpan.Zero
                     };
                 });
             services.AddAuthorization(option =>
@@ -149,10 +155,12 @@ namespace ELearn.Presentation
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IUnitOfWork<DatabaseContext>, UnitOfWork<DatabaseContext>>();
             services.AddTransient<SeedService>();
+            services.AddScoped<IUtilities, Utilities>();
+            services.AddScoped<UserCheckIdFilter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, SeedService seeder)
         {
             if (env.IsDevelopment())
             {
@@ -179,6 +187,9 @@ namespace ELearn.Presentation
                 app.UseHsts();
             }
 
+            seeder.SeedRoles();
+            seeder.SeedUsers();
+
             app.UseHttpsRedirection();
 
             app.UseCors(p => p
@@ -186,7 +197,7 @@ namespace ELearn.Presentation
             //.WithOrigins("http://localhost:4200")
             .AllowAnyMethod()
             .AllowAnyHeader()
-            // .WithExposedHeaders("ejUrl")
+            //.WithExposedHeaders("ejUrl")
             );
 
             app.UseRouting();
