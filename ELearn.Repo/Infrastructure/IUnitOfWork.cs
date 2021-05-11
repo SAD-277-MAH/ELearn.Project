@@ -15,6 +15,7 @@ namespace ELearn.Repo.Infrastructure
         ITokenRepository TokenRepository { get; }
         IStudentRepository StudentRepository { get; }
         ITeacherRepository TeacherRepository { get; }
+        ICategoryRepository CategoryRepository { get; }
 
         bool Save();
         Task<bool> SaveAsync();
