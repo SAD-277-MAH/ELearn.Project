@@ -81,6 +81,21 @@ namespace ELearn.Common.Extentions
                 {
                     opt.MapFrom(src => src.Prerequisites != null ? string.Empty : src.Prerequisites.Title);
                 });
+            CreateMap<SessionForAddDto, Session>()
+                .ForMember(dest => dest.Time, opt =>
+                {
+                    opt.MapFrom(src => TimeSpan.Parse(src.Time));
+                });
+            CreateMap<SessionForUpdateDto, Session>()
+                .ForMember(dest => dest.Time, opt =>
+                {
+                    opt.MapFrom(src => TimeSpan.Parse(src.Time));
+                });
+            CreateMap<Session, SessionForDetailedDto>()
+                .ForMember(dest => dest.Time, opt =>
+                {
+                    opt.MapFrom(src => src.Time.ToString(@"hh\:mm"));
+                });
         }
     }
 }

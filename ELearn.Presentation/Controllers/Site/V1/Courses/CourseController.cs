@@ -37,7 +37,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
             _utilities = utilities;
         }
 
-        [Authorize(Policy = "RequireBloggerRole")]
+        [Authorize(Policy = "RequireTeacherRole")]
         [HttpGet(ApiV1Routes.Course.GetCourses)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
         public async Task<IActionResult> GetCourses(string userId, [FromQuery] PaginationDto pagination)
@@ -124,7 +124,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
                     var newCourse = new Course()
                     {
                         TeacherId = userId,
-                        Status = 0,
+                        Status = 1,
                         PhotoUrl = uploadResult.Url
                     };
 
@@ -156,7 +156,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
         [Authorize(Policy = "RequireTeacherRole")]
         [HttpPut(ApiV1Routes.Course.UpdateCourse)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
-        public async Task<IActionResult> UpdateCourse(string id, string userId, [FromForm] CourseForAddDto dto)
+        public async Task<IActionResult> UpdateCourse(string id, string userId, [FromForm] CourseForUpdateDto dto)
         {
             var course = await _db.CourseRepository.GetAsync(id);
             if (course != null)
@@ -191,7 +191,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
                                 return BadRequest("خطا در آپلود تصویر");
                             }
                         }
-                        course.Status = 0;
+                        course.Status = 1;
                         course.DateModified = DateTime.Now;
 
                         _db.CourseRepository.Update(course);

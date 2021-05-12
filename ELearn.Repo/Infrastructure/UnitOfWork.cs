@@ -110,6 +110,19 @@ namespace ELearn.Repo.Infrastructure
                 return courseRepository;
             }
         }
+
+        private ISessionRepository sessionRepository;
+        public ISessionRepository SessionRepository
+        {
+            get
+            {
+                if (sessionRepository == null)
+                {
+                    sessionRepository = new SessionRepository(_db);
+                }
+                return sessionRepository;
+            }
+        }
         #endregion
 
         #region Save

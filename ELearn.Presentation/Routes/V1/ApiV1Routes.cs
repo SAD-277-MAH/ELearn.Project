@@ -90,25 +90,50 @@ namespace ELearn.Presentation.Routes.V1
         #region Course
         public static class Course
         {
-            // /api/v1/site/courses
+            // /api/v1/site/{userId}/courses
             // GET
             public const string GetCourses = BaseSite + "/{userId}/courses";
 
-            // /api/v1/site/{userId}/categories/{id}
+            // /api/v1/site/{userId}/courses/{id}
             // GET
             public const string GetCourse = BaseSite + "/{userId}/courses/{id}";
 
-            // /api/v1/site/{userId}/categories
+            // /api/v1/site/{userId}/courses
             // POST
             public const string AddCourse = BaseSite + "/{userId}/courses";
 
-            // /api/v1/site/{userId}/categories/{id}
+            // /api/v1/site/{userId}/courses/{id}
             // PUT
             public const string UpdateCourse = BaseSite + "/{userId}/courses/{id}";
 
-            // /api/v1/site/{userId}/categories/{id}
+            // /api/v1/site/{userId}/courses/{id}
             // DELETE
             public const string DeleteCourse = BaseSite + "/{userId}/courses/{id}";
+        }
+        #endregion
+
+        #region Session
+        public static class Session
+        {
+            // /api/v1/site/{userId}/courses/{courseId}/sessions
+            // GET
+            public const string GetSessions = BaseSite + "/{userId}/courses/{courseId}/sessions";
+
+            // /api/v1/site/{userId}/courses/{courseId}/sessions/{id}
+            // GET
+            public const string GetSession = BaseSite + "/{userId}/courses/{courseId}/sessions/{id}";
+
+            // /api/v1/site/{userId}/courses/{courseId}/sessions
+            // POST
+            public const string AddSession = BaseSite + "/{userId}/courses/{courseId}/sessions";
+
+            // /api/v1/site/{userId}/courses/{courseId}/sessions/{id}
+            // PUT
+            public const string UpdateSession = BaseSite + "/{userId}/courses/{courseId}/sessions/{id}";
+
+            // /api/v1/site/{userId}/courses/{courseId}/sessions/{id}
+            // DELETE
+            public const string DeleteSession = BaseSite + "/{userId}/courses/{courseId}/sessions/{id}";
         }
         #endregion
     }

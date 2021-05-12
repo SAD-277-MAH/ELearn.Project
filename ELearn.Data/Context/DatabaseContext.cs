@@ -27,5 +27,7 @@ namespace ELearn.Data.Context
         public DbSet<Student> Students { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Course> Courses { get; set; }
+        public DbSet<Session> Sessions { get; set; }
     }
 }
