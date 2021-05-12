@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -55,6 +56,7 @@ namespace ELearn.Presentation
         public void ConfigureServices(IServiceCollection services)
         {
             //services.AddControllers();
+            services.Configure<FormOptions>(options => { options.MultipartBodyLengthLimit = 2147383648; });
 
             services.AddDbContext<DatabaseContext>(options =>
             {
