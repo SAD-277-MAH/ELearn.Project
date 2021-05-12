@@ -1,6 +1,9 @@
 ﻿//using Shop.Common.Extentions;
 //using Shop.Common.Pagination;
 //using Shop.Data.Dtos.Common.Pagination;
+using Banking.Data.Dtos.Common.Pagination;
+using ELearn.Common.Extentions;
+using ELearn.Common.Pagination;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -142,48 +145,48 @@ namespace ELearn.Repo.Infrastructure
             return query.AsEnumerable();
         }
 
-        //public PagedList<TEntity> GetPagedList(
-        //    PaginationDto pagination,
-        //    Expression<Func<TEntity, bool>> expression,
-        //    string orderBy = "",
-        //    string includeEntity = "")
-        //{
-        //    IQueryable<TEntity> query;
+        public PagedList<TEntity> GetPagedList(
+            PaginationDto pagination,
+            Expression<Func<TEntity, bool>> expression,
+            string orderBy = "",
+            string includeEntity = "")
+        {
+            IQueryable<TEntity> query;
 
-        //    // Filter
-        //    if (expression != null)
-        //    {
-        //        query = _dbSet.Where(expression);
-        //    }
-        //    else
-        //    {
-        //        query = _dbSet.AsQueryable();
-        //    }
-        //    // IncludeEntity
-        //    foreach (var includeentity in includeEntity.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-        //    {
-        //        query = query.Include(includeentity);
-        //    }
-        //    // OrderBy
-        //    if (string.IsNullOrEmpty(orderBy) || string.IsNullOrWhiteSpace(orderBy))
-        //    {
-        //        if (orderBy.Split(',')[1] == "asc")
-        //        {
-        //            query = query.OrderBy(orderBy.Split(',')[0]);
-        //        }
-        //        else if (orderBy.Split(',')[1] == "desc")
-        //        {
-        //            query = query.OrderByDescending(orderBy.Split(',')[0]);
-        //        }
-        //        else
-        //        {
-        //            query = query.OrderBy(orderBy.Split(',')[0]);
-        //        }
+            // Filter
+            if (expression != null)
+            {
+                query = _dbSet.Where(expression);
+            }
+            else
+            {
+                query = _dbSet.AsQueryable();
+            }
+            // IncludeEntity
+            foreach (var includeentity in includeEntity.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                query = query.Include(includeentity);
+            }
+            // OrderBy
+            if (string.IsNullOrEmpty(orderBy) || string.IsNullOrWhiteSpace(orderBy))
+            {
+                if (orderBy.Split(',')[1] == "asc")
+                {
+                    query = query.OrderBy(orderBy.Split(',')[0]);
+                }
+                else if (orderBy.Split(',')[1] == "desc")
+                {
+                    query = query.OrderByDescending(orderBy.Split(',')[0]);
+                }
+                else
+                {
+                    query = query.OrderBy(orderBy.Split(',')[0]);
+                }
 
-        //    }
+            }
 
-        //    return PagedList<TEntity>.ToPagedList(query, pagination.PageNumber, pagination.PageSize);
-        //}
+            return PagedList<TEntity>.ToPagedList(query, pagination.PageNumber, pagination.PageSize);
+        }
         #endregion
 
         #region Async
@@ -269,47 +272,47 @@ namespace ELearn.Repo.Infrastructure
             return await query.ToListAsync();
         }
 
-        //public async Task<PagedList<TEntity>> GetPagedListAsync(
-        //    PaginationDto paginationDto,
-        //    Expression<Func<TEntity, bool>> expression,
-        //    string orderBy = "",
-        //    string includeEntity = "")
-        //{
-        //    IQueryable<TEntity> query;
+        public async Task<PagedList<TEntity>> GetPagedListAsync(
+            PaginationDto paginationDto,
+            Expression<Func<TEntity, bool>> expression,
+            string orderBy = "",
+            string includeEntity = "")
+        {
+            IQueryable<TEntity> query;
 
-        //    // Filter
-        //    if (expression != null)
-        //    {
-        //        query = _dbSet.Where(expression);
-        //    }
-        //    else
-        //    {
-        //        query = _dbSet.AsQueryable();
-        //    }
-        //    // IncludeEntity
-        //    foreach (var includeentity in includeEntity.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-        //    {
-        //        query = query.Include(includeentity);
-        //    }
-        //    // OrderBy
-        //    if (!string.IsNullOrEmpty(orderBy) && !string.IsNullOrWhiteSpace(orderBy))
-        //    {
-        //        if (orderBy.Split(',')[1] == "asc")
-        //        {
-        //            query = query.OrderBy(orderBy.Split(',')[0]);
-        //        }
-        //        else if (orderBy.Split(',')[1] == "desc")
-        //        {
-        //            query = query.OrderByDescending(orderBy.Split(',')[0]);
-        //        }
-        //        else
-        //        {
-        //            query = query.OrderBy(orderBy.Split(',')[0]);
-        //        }
-        //    }
+            // Filter
+            if (expression != null)
+            {
+                query = _dbSet.Where(expression);
+            }
+            else
+            {
+                query = _dbSet.AsQueryable();
+            }
+            // IncludeEntity
+            foreach (var includeentity in includeEntity.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                query = query.Include(includeentity);
+            }
+            // OrderBy
+            if (!string.IsNullOrEmpty(orderBy) && !string.IsNullOrWhiteSpace(orderBy))
+            {
+                if (orderBy.Split(',')[1] == "asc")
+                {
+                    query = query.OrderBy(orderBy.Split(',')[0]);
+                }
+                else if (orderBy.Split(',')[1] == "desc")
+                {
+                    query = query.OrderByDescending(orderBy.Split(',')[0]);
+                }
+                else
+                {
+                    query = query.OrderBy(orderBy.Split(',')[0]);
+                }
+            }
 
-        //    return await PagedList<TEntity>.ToPagedListAsync(query, paginationDto.PageNumber, paginationDto.PageSize);
-        //}
+            return await PagedList<TEntity>.ToPagedListAsync(query, paginationDto.PageNumber, paginationDto.PageSize);
+        }
         #endregion
 
         #region Dispose

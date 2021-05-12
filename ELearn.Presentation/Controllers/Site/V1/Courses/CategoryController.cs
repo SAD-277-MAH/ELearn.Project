@@ -51,6 +51,50 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
             return Ok(categoriesForDetailed);
         }
 
+        [HttpGet(ApiV1Routes.Category.GetParentCategories)]
+        public async Task<IActionResult> GetParentCategories()
+        {
+            var categories = await _db.CategoryRepository.GetAsync(null, o => o.OrderByDescending(c => c.DateCreated), "Parent");
+
+            var categoriesForDetailed = new List<CategoryForDetailedDto>();
+            foreach (var category in categories)
+            {
+                if (category.Parent == null)
+                {
+                    var categoryForDetailed = new CategoryForDetailedDto()
+                    {
+                        Name = category.Name
+                    };
+                    categoriesForDetailed.Add(categoryForDetailed);
+                }
+            }
+
+            return Ok(categoriesForDetailed);
+        }
+
+        [HttpGet(ApiV1Routes.Category.GetChildCategories)]
+        public async Task<IActionResult> GetChildCategories()
+        {
+            var categories = await _db.CategoryRepository.GetAsync(null, o => o.OrderByDescending(c => c.DateCreated), "Parent");
+
+            var categoriesForDetailed = new List<CategoryForDetailedDto>();
+            foreach (var category in categories)
+            {
+                if (category.Parent != null)
+                {
+                    var categoryForDetailed = new CategoryForDetailedDto()
+                    {
+                        Name = category.Name,
+                        ParentName = category.Parent.Name,
+                        ParentId = category.ParentId
+                    };
+                    categoriesForDetailed.Add(categoryForDetailed);
+                }
+            }
+
+            return Ok(categoriesForDetailed);
+        }
+
         [HttpGet(ApiV1Routes.Category.GetCategory, Name = nameof(GetCategory))]
         public async Task<IActionResult> GetCategory(int id)
         {

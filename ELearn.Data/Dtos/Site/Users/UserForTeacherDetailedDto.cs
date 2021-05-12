@@ -35,9 +35,9 @@ namespace ELearn.Data.Dtos.Site.Users
         [MinLength(10, ErrorMessage = "مقدار {0} نمی تواند کمتر از {1} باشد")]
         public string NationalCode { get; set; }
 
-        [Display(Name = "روز تولد")]
+        [Display(Name = "سن")]
         [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
-        public string BirthDate { get; set; }
+        public int Age { get; set; }
 
         [Display(Name = "آخرین مدرک تحصیلی")]
         [Required(ErrorMessage = "مقدار {0} را وارد کنید")]

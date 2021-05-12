@@ -1,5 +1,5 @@
-﻿//using Shop.Common.Pagination;
-//using Shop.Data.Dtos.Common.Pagination;
+﻿using Banking.Data.Dtos.Common.Pagination;
+using ELearn.Common.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,11 +31,11 @@ namespace ELearn.Repo.Infrastructure
             int page, int count,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             string includeEntity = "");
-        //PagedList<TEntity> GetPagedList(
-        //    PaginationDto pagination,
-        //    Expression<Func<TEntity, bool>> expression,
-        //    string orderBy = "",
-        //    string includeEntity = "");
+        PagedList<TEntity> GetPagedList(
+            PaginationDto pagination,
+            Expression<Func<TEntity, bool>> expression,
+            string orderBy = "",
+            string includeEntity = "");
 
         //--------------------------------------------------------------------
 
@@ -52,10 +52,10 @@ namespace ELearn.Repo.Infrastructure
             int page, int count,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             string includeEntity = "");
-        //Task<PagedList<TEntity>> GetPagedListAsync(
-        //    PaginationDto pagination,
-        //    Expression<Func<TEntity, bool>> expression,
-        //    string orderBy = "",
-        //    string includeEntity = "");
+        Task<PagedList<TEntity>> GetPagedListAsync(
+            PaginationDto pagination,
+            Expression<Func<TEntity, bool>> expression,
+            string orderBy = "",
+            string includeEntity = "");
     }
 }

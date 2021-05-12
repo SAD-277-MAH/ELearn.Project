@@ -97,6 +97,19 @@ namespace ELearn.Repo.Infrastructure
                 return categoryRepository;
             }
         }
+
+        private ICourseRepository courseRepository;
+        public ICourseRepository CourseRepository
+        {
+            get
+            {
+                if (courseRepository == null)
+                {
+                    courseRepository = new CourseRepository(_db);
+                }
+                return courseRepository;
+            }
+        }
         #endregion
 
         #region Save

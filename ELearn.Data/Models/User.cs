@@ -48,5 +48,8 @@ namespace ELearn.Data.Models
 
         [ForeignKey("TeacherId")]
         public Teacher Teacher { get; set; }
+
+
+        public virtual ICollection<Course> Courses { get; set; }
     }
 }

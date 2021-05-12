@@ -61,6 +61,14 @@ namespace ELearn.Presentation.Routes.V1
             // GET
             public const string GetCategories = BaseSite + "/categories";
 
+            // /api/v1/site/categories/parents
+            // GET
+            public const string GetParentCategories = BaseSite + "/categories/parents";
+
+            // /api/v1/site/categories/childs
+            // GET
+            public const string GetChildCategories = BaseSite + "/categories/childs";
+
             // /api/v1/site/categories/{id}
             // GET
             public const string GetCategory = BaseSite + "/categories/{id}";
@@ -76,6 +84,31 @@ namespace ELearn.Presentation.Routes.V1
             // /api/v1/site/{userId}/categories
             // DELETE
             public const string DeleteCategory = BaseSite + "/{userId}/categories/{id}";
+        }
+        #endregion
+
+        #region Course
+        public static class Course
+        {
+            // /api/v1/site/courses
+            // GET
+            public const string GetCourses = BaseSite + "/{userId}/courses";
+
+            // /api/v1/site/{userId}/categories/{id}
+            // GET
+            public const string GetCourse = BaseSite + "/{userId}/courses/{id}";
+
+            // /api/v1/site/{userId}/categories
+            // POST
+            public const string AddCourse = BaseSite + "/{userId}/courses";
+
+            // /api/v1/site/{userId}/categories/{id}
+            // PUT
+            public const string UpdateCourse = BaseSite + "/{userId}/courses/{id}";
+
+            // /api/v1/site/{userId}/categories/{id}
+            // DELETE
+            public const string DeleteCourse = BaseSite + "/{userId}/courses/{id}";
         }
         #endregion
     }

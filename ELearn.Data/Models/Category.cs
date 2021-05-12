@@ -28,5 +28,7 @@ namespace ELearn.Data.Models
 
 
         public virtual ICollection<Category> Categories { get; set; }
+
+        public virtual ICollection<Course> Courses { get; set; }
     }
 }

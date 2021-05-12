@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ELearn.Data.Dtos.Site.Course;
 using ELearn.Data.Dtos.Site.Users;
 using ELearn.Data.Models;
 using System;
@@ -32,9 +33,9 @@ namespace ELearn.Common.Extentions
                     opt.MapFrom(src => src.Student.Major);
                 });
             CreateMap<User, UserForTeacherDetailedDto>()
-                .ForMember(dest => dest.BirthDate, opt =>
+                .ForMember(dest => dest.Age, opt =>
                 {
-                    opt.MapFrom(src => src.Teacher.BirthDate.ToShamsiDate());
+                    opt.MapFrom(src => src.Teacher.BirthDate.ToAge());
                 })
                 .ForMember(dest => dest.Degree, opt =>
                 {
@@ -55,6 +56,30 @@ namespace ELearn.Common.Extentions
                 .ForMember(dest => dest.Status, opt =>
                 {
                     opt.MapFrom(src => src.Teacher.Status);
+                });
+
+            CreateMap<CourseForAddDto, Course>();
+            CreateMap<CourseForUpdateDto, Course>();
+            CreateMap<Course, CourseForDetailedDto>()
+                .ForMember(dest => dest.DateCreated, opt =>
+                {
+                    opt.MapFrom(src => src.DateCreated.ToShamsiDate());
+                })
+                .ForMember(dest => dest.VerifiedAt, opt =>
+                {
+                    opt.MapFrom(src => src.VerifiedAt.ToShamsiDate());
+                })
+                .ForMember(dest => dest.TeacherName, opt =>
+                {
+                    opt.MapFrom(src => src.Teacher.UserName);
+                })
+                .ForMember(dest => dest.CategoryName, opt =>
+                {
+                    opt.MapFrom(src => src.Category.Name);
+                })
+                .ForMember(dest => dest.PrerequisitesTitle, opt =>
+                {
+                    opt.MapFrom(src => src.Prerequisites != null ? string.Empty : src.Prerequisites.Title);
                 });
         }
     }

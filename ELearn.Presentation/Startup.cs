@@ -1,4 +1,5 @@
 using AutoMapper;
+using Banking.Services.Upload.Service;
 using ELearn.Common.Extentions;
 using ELearn.Common.Filters;
 using ELearn.Common.Helpers.Interface;
@@ -7,6 +8,7 @@ using ELearn.Data.Context;
 using ELearn.Data.Models;
 using ELearn.Repo.Infrastructure;
 using ELearn.Services.Seed.Service;
+using ELearn.Services.Upload.Interface;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
@@ -156,6 +158,7 @@ namespace ELearn.Presentation
             services.AddScoped<IUnitOfWork<DatabaseContext>, UnitOfWork<DatabaseContext>>();
             services.AddTransient<SeedService>();
             services.AddScoped<IUtilities, Utilities>();
+            services.AddScoped<IUploadService, UploadService>();
             services.AddScoped<UserCheckIdFilter>();
         }
 
