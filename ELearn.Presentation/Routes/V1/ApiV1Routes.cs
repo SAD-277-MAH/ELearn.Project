@@ -153,5 +153,18 @@ namespace ELearn.Presentation.Routes.V1
             public const string RemoveFromOrder = BaseSite + "/{userId}/order/{courseId}";
         }
         #endregion
+
+        #region Comment
+        public static class Comment
+        {
+            // /api/v1/site/courses/{courseId}/comments
+            // GET
+            public const string GetComments = BaseSite + "/courses/{courseId}/comments";
+
+            // /api/v1/site/{userId}/courses/{courseId}/comments
+            // POST
+            public const string AddComment = BaseSite + "/{userId}/courses/{courseId}/comments";
+        }
+        #endregion
     }
 }

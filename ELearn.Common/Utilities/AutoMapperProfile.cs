@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ELearn.Common.Extentions;
+using ELearn.Data.Dtos.Site.Comment;
 using ELearn.Data.Dtos.Site.Course;
 using ELearn.Data.Dtos.Site.Order;
 using ELearn.Data.Dtos.Site.Users;
@@ -108,6 +109,24 @@ namespace ELearn.Common.Utilities
                 .ForMember(dest => dest.PhotoUrl, opt =>
                 {
                     opt.MapFrom(src => src.Course.PhotoUrl);
+                });
+
+            CreateMap<Comment, CommentForDetailedDto>()
+                .ForMember(dest => dest.FirstName, opt =>
+                {
+                    opt.MapFrom(src => src.User.FirstName);
+                })
+                .ForMember(dest => dest.LastName, opt =>
+                {
+                    opt.MapFrom(src => src.User.LastName);
+                })
+                .ForMember(dest => dest.PhotoUrl, opt =>
+                {
+                    opt.MapFrom(src => src.User.PhotoUrl);
+                })
+                .ForMember(dest => dest.Date, opt =>
+                {
+                    opt.MapFrom(src => src.DateCreated.ToShamsiDateTime());
                 });
         }
     }

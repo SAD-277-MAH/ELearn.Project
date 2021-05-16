@@ -162,6 +162,19 @@ namespace ELearn.Repo.Infrastructure
                 return orderDetailRepository;
             }
         }
+
+        private ICommentRepository commentRepository;
+        public ICommentRepository CommentRepository
+        {
+            get
+            {
+                if (commentRepository == null)
+                {
+                    commentRepository = new CommentRepository(_db);
+                }
+                return commentRepository;
+            }
+        }
         #endregion
 
         #region Save

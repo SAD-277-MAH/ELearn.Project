@@ -31,7 +31,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Orders
         }
 
         [Authorize(Policy = "RequireStudentRole")]
-        [HttpPost(ApiV1Routes.Order.GetOrder)]
+        [HttpGet(ApiV1Routes.Order.GetOrder)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
         public async Task<IActionResult> GetOrder(string userId)
         {
