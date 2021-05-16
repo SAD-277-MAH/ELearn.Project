@@ -123,6 +123,45 @@ namespace ELearn.Repo.Infrastructure
                 return sessionRepository;
             }
         }
+
+        private IUserCourseRepository userCourseRepository;
+        public IUserCourseRepository UserCourseRepository
+        {
+            get
+            {
+                if (userCourseRepository == null)
+                {
+                    userCourseRepository = new UserCourseRepository(_db);
+                }
+                return userCourseRepository;
+            }
+        }
+
+        private IOrderRepository orderRepository;
+        public IOrderRepository OrderRepository
+        {
+            get
+            {
+                if (orderRepository == null)
+                {
+                    orderRepository = new OrderRepository(_db);
+                }
+                return orderRepository;
+            }
+        }
+
+        private IOrderDetailRepository orderDetailRepository;
+        public IOrderDetailRepository OrderDetailRepository
+        {
+            get
+            {
+                if (orderDetailRepository == null)
+                {
+                    orderDetailRepository = new OrderDetailRepository(_db);
+                }
+                return orderDetailRepository;
+            }
+        }
         #endregion
 
         #region Save

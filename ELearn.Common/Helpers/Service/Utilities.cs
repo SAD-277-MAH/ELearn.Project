@@ -1,5 +1,5 @@
-﻿using ELearn.Common.Extentions;
-using ELearn.Common.Helpers.Interface;
+﻿using ELearn.Common.Helpers.Interface;
+using ELearn.Common.Utilities;
 using ELearn.Data.Context;
 using ELearn.Data.Dtos.Site.Tokens;
 using ELearn.Data.Models;

@@ -51,5 +51,7 @@ namespace ELearn.Data.Models
 
 
         public virtual ICollection<Course> Courses { get; set; }
+
+        public virtual ICollection<UserCourse> UserCourses { get; set; }
     }
 }

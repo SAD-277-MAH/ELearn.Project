@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace ELearn.Common.Extentions
+namespace ELearn.Common.Utilities
 {
     public class PersianIdentityErrorDescriber : IdentityErrorDescriber
     {

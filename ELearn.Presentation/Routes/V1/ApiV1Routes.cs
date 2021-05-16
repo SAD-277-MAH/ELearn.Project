@@ -136,5 +136,22 @@ namespace ELearn.Presentation.Routes.V1
             public const string DeleteSession = BaseSite + "/{userId}/courses/{courseId}/sessions/{id}";
         }
         #endregion
+
+        #region Order
+        public static class Order
+        {
+            // /api/v1/site/{userId}/order
+            // GET
+            public const string GetOrder = BaseSite + "/{userId}/order";
+
+            // /api/v1/site/{userId}/order/{courseId}
+            // POST
+            public const string AddToOrder = BaseSite + "/{userId}/order/{courseId}";
+
+            // /api/v1/site/{userId}/order/{courseId}
+            // DELETE
+            public const string RemoveFromOrder = BaseSite + "/{userId}/order/{courseId}";
+        }
+        #endregion
     }
 }

@@ -4,10 +4,13 @@ using ELearn.Common.Extentions;
 using ELearn.Common.Filters;
 using ELearn.Common.Helpers.Interface;
 using ELearn.Common.Helpers.Service;
+using ELearn.Common.Utilities;
 using ELearn.Data.Context;
 using ELearn.Data.Models;
 using ELearn.Repo.Infrastructure;
 using ELearn.Services.Seed.Service;
+using ELearn.Services.Site.Interface;
+using ELearn.Services.Site.Service;
 using ELearn.Services.Upload.Interface;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -161,6 +164,8 @@ namespace ELearn.Presentation
             services.AddTransient<SeedService>();
             services.AddScoped<IUtilities, Utilities>();
             services.AddScoped<IUploadService, UploadService>();
+            services.AddTransient<IOrderService, OrderService>();
+
             services.AddScoped<UserCheckIdFilter>();
         }
 

@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
+using ELearn.Common.Extentions;
 using ELearn.Data.Dtos.Site.Course;
+using ELearn.Data.Dtos.Site.Order;
 using ELearn.Data.Dtos.Site.Users;
 using ELearn.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ELearn.Common.Extentions
+namespace ELearn.Common.Utilities
 {
     public class AutoMapperProfile : Profile
     {
@@ -95,6 +97,17 @@ namespace ELearn.Common.Extentions
                 .ForMember(dest => dest.Time, opt =>
                 {
                     opt.MapFrom(src => src.Time.ToString(@"hh\:mm"));
+                });
+
+            CreateMap<Order, OrderForDetailedDto>();
+            CreateMap<OrderDetail, OrderDetailForDetailedDto>()
+                .ForMember(dest => dest.Title, opt =>
+                {
+                    opt.MapFrom(src => src.Course.Title);
+                })
+                .ForMember(dest => dest.PhotoUrl, opt =>
+                {
+                    opt.MapFrom(src => src.Course.PhotoUrl);
                 });
         }
     }

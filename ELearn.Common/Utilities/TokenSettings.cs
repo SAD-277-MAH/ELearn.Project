@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ELearn.Common.Extentions
+namespace ELearn.Common.Utilities
 {
     public class TokenSettings
     {
