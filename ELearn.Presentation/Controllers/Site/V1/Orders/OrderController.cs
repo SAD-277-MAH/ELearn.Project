@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ZarinpalSandbox;
 
 namespace ELearn.Presentation.Controllers.Site.V1.Orders
 {
@@ -83,6 +84,37 @@ namespace ELearn.Presentation.Controllers.Site.V1.Orders
             else
             {
                 return BadRequest(result);
+            }
+        }
+
+        [Authorize(Policy = "RequireStudentRole")]
+        [HttpGet(ApiV1Routes.Order.Payment)]
+        [ServiceFilter(typeof(UserCheckIdFilter))]
+        public async Task<IActionResult> Payment(string userId)
+        {
+            var isChanged = await _orderService.UpdateOrderAsync(userId);
+            if (isChanged.Status)
+            {
+                return BadRequest(isChanged);
+            }
+
+            var order = await _db.OrderRepository.GetAsync(o => o.UserId == userId && !o.Status, "OrderDetails,CouponOrders");
+            if (order == null)
+            {
+                return BadRequest("سبد خرید یافت نشد");
+            }
+
+            string host = $"{Request.Scheme}://{Request.Host}{Request.PathBase}";
+            var payment = new Payment(Convert.ToInt32(order.OrderSum - order.Discount));
+            var res = payment.PaymentRequest("پرداخت فاکتور فروشگاه دوره های آموزشی", host + "/Payment/Verify/" + order.Id, User.Identity.Name);
+
+            if (res.Result.Status == 100)
+            {
+                return Ok("https://sandbox.zarinpal.com/pg/StartPay/" + res.Result.Authority);
+            }
+            else
+            {
+                return BadRequest("درحال حاضر درگاه بانک آماده نیست");
             }
         }
     }

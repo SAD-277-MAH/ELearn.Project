@@ -54,6 +54,11 @@ namespace ELearn.Data.Dtos.Site.Users
         [MaxLength(50, ErrorMessage = "مقدار {0} نمی تواند بیشتر از {1} باشد")]
         public string Degree { get; set; }
 
+        [Display(Name = "زمینه تخصص")]
+        [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
+        [MaxLength(50, ErrorMessage = "مقدار {0} نمی تواند بیشتر از {1} باشد")]
+        public string Specialty { get; set; }
+
         [Display(Name = "آدرس ایمیل")]
         [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
         [MaxLength(200, ErrorMessage = "مقدار {0} نمی تواند بیشتر از {1} باشد")]
@@ -70,7 +75,6 @@ namespace ELearn.Data.Dtos.Site.Users
         public string Address { get; set; }
 
         [Display(Name = "توضیحات")]
-        [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
         public string Description { get; set; }
     }
 }

@@ -32,10 +32,6 @@ namespace ELearn.Data.Models
         [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
         public string PhotoUrl { get; set; }
 
-        [Display(Name = "پیشنیاز")]
-        [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
-        public bool HasPrerequisites { get; set; }
-
         [Display(Name = "قیمت")]
         [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
         [Range(0, int.MaxValue, ErrorMessage = "مقدار {0} نمی تواند کمتر از {1} باشد")]
@@ -55,8 +51,6 @@ namespace ELearn.Data.Models
         [Required]
         public int CategoryId { get; set; }
 
-        public string PrerequisitesId { get; set; }
-
 
         [ForeignKey("TeacherId")]
         public virtual User Teacher { get; set; }
@@ -64,12 +58,11 @@ namespace ELearn.Data.Models
         [ForeignKey("CategoryId")]
         public virtual Category Category { get; set; }
 
-        [ForeignKey("PrerequisitesId")]
-        public virtual Course Prerequisites { get; set; }
 
-
-        public virtual ICollection<Course> Courses { get; set; }
+        public virtual ICollection<Session> Sessions { get; set; }
 
         public virtual ICollection<UserCourse> UserCourses { get; set; }
+
+        public virtual ICollection<Comment> Comments { get; set; }
     }
 }

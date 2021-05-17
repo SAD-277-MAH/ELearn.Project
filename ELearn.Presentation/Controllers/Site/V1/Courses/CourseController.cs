@@ -4,10 +4,12 @@ using ELearn.Common.Extentions;
 using ELearn.Common.Filters;
 using ELearn.Common.Helpers.Interface;
 using ELearn.Data.Context;
+using ELearn.Data.Dtos.Site.Comment;
 using ELearn.Data.Dtos.Site.Course;
 using ELearn.Data.Models;
 using ELearn.Presentation.Routes.V1;
 using ELearn.Repo.Infrastructure;
+using ELearn.Services.Site.Interface;
 using ELearn.Services.Upload.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -16,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ELearn.Presentation.Controllers.Site.V1.Courses
@@ -28,46 +31,77 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
         private readonly IMapper _mapper;
         private readonly IUploadService _uploadService;
         private readonly IUtilities _utilities;
+        private readonly IOrderService _orderService;
 
-        public CourseController(IUnitOfWork<DatabaseContext> db, IMapper mapper, IUploadService uploadService, IUtilities utilities)
+        public CourseController(IUnitOfWork<DatabaseContext> db, IMapper mapper, IUploadService uploadService, IUtilities utilities, IOrderService orderService)
         {
             _db = db;
             _mapper = mapper;
             _uploadService = uploadService;
             _utilities = utilities;
+            _orderService = orderService;
         }
 
-        [Authorize(Policy = "RequireTeacherRole")]
         [HttpGet(ApiV1Routes.Course.GetCourses)]
-        [ServiceFilter(typeof(UserCheckIdFilter))]
-        public async Task<IActionResult> GetCourses(string userId, [FromQuery] PaginationDto pagination)
+        public async Task<IActionResult> GetCourses([FromQuery] PaginationDto pagination)
         {
-            var courses = await _db.CourseRepository.GetPagedListAsync(pagination, pagination.Filter.ToCourseExpression(false, userId), pagination.SortHeader.ToCourseOrderBy(pagination.SortDirection), "Teacher,Category,Prerequisites");
+            var courses = await _db.CourseRepository.GetPagedListAsync(pagination, pagination.Filter.ToCourseExpression(), pagination.SortHeader.ToCourseOrderBy(pagination.SortDirection), "Teacher");
             Response.AddPagination(courses.CurrentPage, courses.PageSize, courses.TotalCount, courses.TotalPages);
             var coursesForDetailed = _mapper.Map<List<CourseForDetailedDto>>(courses);
 
             return Ok(coursesForDetailed);
         }
 
-        [Authorize(Policy = "RequireTeacherRole")]
-        [HttpGet(ApiV1Routes.Course.GetCourse, Name = nameof(GetCourse))]
+        [Authorize(Policy = "RequireTeacherOrStudentRole")]
+        [HttpGet(ApiV1Routes.Course.GetUserCourses)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
-        public async Task<IActionResult> GetCourse(string id, string userId)
+        public async Task<IActionResult> GetUserCourses(string userId)
         {
-            var course = await _db.CourseRepository.GetAsync(c => c.Id == id, string.Empty);
+            if (User.HasClaim(ClaimTypes.Role, "Teacher"))
+            {
+                var courses = await _db.CourseRepository.GetAsync(c => c.TeacherId == userId, o => o.OrderByDescending(c => c.DateCreated), "Sessions");
+
+                var coursesForDetailed = _mapper.Map<List<CourseForTeacherDetailedDto>>(courses);
+
+                return Ok(coursesForDetailed);
+            }
+            else
+            {
+                var studentCourses = await _db.UserCourseRepository.GetAsync(u => u.UserId == userId, o => o.OrderByDescending(c => c.DateCreated), "Sessions");
+
+                var coursesForDetailed = new List<CourseForStudentDetailedDto>();
+
+                foreach (var studentCourse in studentCourses)
+                {
+                    var course = await _db.CourseRepository.GetAsync(studentCourse.CourseId);
+                    coursesForDetailed.Add(_mapper.Map<CourseForStudentDetailedDto>(course));
+                }
+
+                return Ok(coursesForDetailed);
+            }
+
+        }
+
+        [HttpGet(ApiV1Routes.Course.GetCourse, Name = nameof(GetCourse))]
+        public async Task<IActionResult> GetCourse(string id)
+        {
+            var course = await _db.CourseRepository.GetAsync(c => c.Id == id, "Sessions,Comments");
 
             if (course != null)
             {
-                if (course.TeacherId == userId)
-                {
-                    var courseForDetailed = _mapper.Map<CourseForDetailedDto>(course);
+                var courseForDetailed = _mapper.Map<CourseForSiteDetailedDto>(course);
+                courseForDetailed.Comments = _mapper.Map<List<CommentForDetailedDto>>(course.Comments);
 
-                    return Ok(courseForDetailed);
+                if (User.Identity.IsAuthenticated && User.HasClaim(ClaimTypes.Role, "Student") && await _orderService.IsUserInCourseAsync(User.FindFirst(ClaimTypes.NameIdentifier).Value, id))
+                {
+                    courseForDetailed.Sessions = _mapper.Map<List<SessionForDetailedDto>>(course.Sessions);
                 }
                 else
                 {
-                    return Unauthorized("دسترسی غیر مجاز");
+                    courseForDetailed.Sessions = null;
                 }
+
+                return Ok(courseForDetailed);
             }
             else
             {
@@ -89,26 +123,6 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
                 if (category == null)
                 {
                     return BadRequest("دسته بندی یافت نشد");
-                }
-
-                if (dto.HasPrerequisites)
-                {
-                    if (string.IsNullOrWhiteSpace(dto.PrerequisitesId))
-                    {
-                        return BadRequest("پیشنیاز را انتخاب کنید");
-                    }
-                    else
-                    {
-                        var courseExist = await _db.CourseRepository.GetAsync(dto.PrerequisitesId);
-                        if (courseExist == null)
-                        {
-                            return BadRequest("پیشنیاز یافت نشد");
-                        }
-                    }
-                }
-                else
-                {
-                    dto.PrerequisitesId = null;
                 }
 
                 if (!dto.File.IsImage())

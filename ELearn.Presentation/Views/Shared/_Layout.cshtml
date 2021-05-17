@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>فروشگاه اینترنتی دوره‌های آموزشی</title>
+    <meta name="viewport" content="initial-scale=1.0 user-scalable=no width=device-width">
+
+    <link href="~/wwwroot/Content/css/site.css" rel="stylesheet" />
+
+</head>
+<body id="body">
+    <section id="application">
+        <div>
+            <div class="notifications-container">
+            </div>
+            <div class="_bYekan">
+                <div class="transitionFlip" style="opacity: 1;">
+                    <div class="container">
+                        @RenderBody()
+                    </div>
+                </div>
+                <div class="signature">
+                    <a target="_blank" href="https://www.zarinpal.com/">درگاه پرداخت زرین پال</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @RenderSection("Scripts", required: false)
+
+</body>
+</html>

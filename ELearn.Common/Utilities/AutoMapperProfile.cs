@@ -63,27 +63,22 @@ namespace ELearn.Common.Utilities
 
             CreateMap<CourseForAddDto, Course>();
             CreateMap<CourseForUpdateDto, Course>();
+            CreateMap<Course, CourseForTeacherDetailedDto>()
+                .ForMember(dest => dest.SessionCount, opt =>
+                {
+                    opt.MapFrom(src => src.Sessions.Count);
+                });
+            CreateMap<Course, CourseForStudentDetailedDto>()
+                .ForMember(dest => dest.SessionCount, opt =>
+                {
+                    opt.MapFrom(src => src.Sessions.Count);
+                });
             CreateMap<Course, CourseForDetailedDto>()
-                .ForMember(dest => dest.DateCreated, opt =>
-                {
-                    opt.MapFrom(src => src.DateCreated.ToShamsiDate());
-                })
-                .ForMember(dest => dest.VerifiedAt, opt =>
-                {
-                    opt.MapFrom(src => src.VerifiedAt.ToShamsiDate());
-                })
                 .ForMember(dest => dest.TeacherName, opt =>
                 {
-                    opt.MapFrom(src => src.Teacher.UserName);
-                })
-                .ForMember(dest => dest.CategoryName, opt =>
-                {
-                    opt.MapFrom(src => src.Category.Name);
-                })
-                .ForMember(dest => dest.PrerequisitesTitle, opt =>
-                {
-                    opt.MapFrom(src => src.Prerequisites != null ? string.Empty : src.Prerequisites.Title);
+                    opt.MapFrom(src => src.Teacher.FirstName + src.Teacher.LastName);
                 });
+
             CreateMap<SessionForAddDto, Session>()
                 .ForMember(dest => dest.Time, opt =>
                 {

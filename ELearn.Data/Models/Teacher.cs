@@ -26,6 +26,11 @@ namespace ELearn.Data.Models
         [MaxLength(50, ErrorMessage = "مقدار {0} نمی تواند بیشتر از {1} باشد")]
         public string Degree { get; set; }
 
+        [Display(Name = "زمینه تخصص")]
+        [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
+        [MaxLength(50, ErrorMessage = "مقدار {0} نمی تواند بیشتر از {1} باشد")]
+        public string Specialty { get; set; }
+
         [Display(Name = "تلفن ثابت")]
         [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
         [MaxLength(50, ErrorMessage = "مقدار {0} نمی تواند بیشتر از {1} باشد")]
@@ -36,7 +41,6 @@ namespace ELearn.Data.Models
         public string Address { get; set; }
 
         [Display(Name = "توضیحات")]
-        [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
         public string Description { get; set; }
 
         [Display(Name = "وضعیت مدارک")]

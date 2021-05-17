@@ -35,6 +35,7 @@ namespace ELearn.Common.Helpers.Service
             _tokenSettings = tokenSettingsSection.Get<TokenSettings>();
             _http = http;
         }
+
         #region Token
         public async Task<TokenForResponseDto> GenerateNewTokenAsync(TokenForRequestDto tokenForRequestDto)
         {

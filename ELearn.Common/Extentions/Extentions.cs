@@ -134,38 +134,20 @@ namespace ELearn.Common.Extentions
         #endregion
 
         #region Course Paging
-        public static Expression<Func<Course, bool>> ToCourseExpression(this string Filter, bool isAdmin, string userId = "")
+        public static Expression<Func<Course, bool>> ToCourseExpression(this string Filter)
         {
             Expression<Func<Course, bool>> exp;
 
             if (string.IsNullOrEmpty(Filter) || string.IsNullOrWhiteSpace(Filter))
             {
-                if (isAdmin)
-                {
-                    exp = null;
-                }
-                else
-                {
-                    exp = p => p.TeacherId == userId;
-                }
+                exp = null;
             }
             else
             {
-                if (isAdmin)
-                {
-                    exp = p => p.Id.Contains(Filter) ||
-                          p.Title.Contains(Filter) ||
-                          p.Description.Contains(Filter) ||
-                          p.Category.Name.Contains(Filter);
-                }
-                else
-                {
-                    exp = p => (p.Id.Contains(Filter) ||
-                          p.Title.Contains(Filter) ||
-                          p.Description.Contains(Filter) ||
-                          p.Category.Name.Contains(Filter)) &&
-                          p.TeacherId == userId;
-                }
+                exp = p =>
+                      p.Title.Contains(Filter) ||
+                      p.Description.Contains(Filter) ||
+                      p.Category.Name.Contains(Filter);
             }
             return exp;
         }

@@ -90,13 +90,17 @@ namespace ELearn.Presentation.Routes.V1
         #region Course
         public static class Course
         {
+            // /api/v1/site/courses
+            // GET
+            public const string GetCourses = BaseSite + "/courses";
+
             // /api/v1/site/{userId}/courses
             // GET
-            public const string GetCourses = BaseSite + "/{userId}/courses";
+            public const string GetUserCourses = BaseSite + "/{userId}/courses";
 
-            // /api/v1/site/{userId}/courses/{id}
+            // /api/v1/site/courses/{id}
             // GET
-            public const string GetCourse = BaseSite + "/{userId}/courses/{id}";
+            public const string GetCourse = BaseSite + "/courses/{id}";
 
             // /api/v1/site/{userId}/courses
             // POST
@@ -151,6 +155,10 @@ namespace ELearn.Presentation.Routes.V1
             // /api/v1/site/{userId}/order/{courseId}
             // DELETE
             public const string RemoveFromOrder = BaseSite + "/{userId}/order/{courseId}";
+
+            // /api/v1/site/{userId}/order/pay
+            // GET
+            public const string Payment = BaseSite + "/{userId}/order/pay";
         }
         #endregion
 

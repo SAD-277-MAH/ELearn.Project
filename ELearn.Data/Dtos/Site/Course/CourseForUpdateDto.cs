@@ -17,10 +17,6 @@ namespace ELearn.Data.Dtos.Site.Course
         [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
         public string Description { get; set; }
 
-        [Display(Name = "پیشنیاز")]
-        [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
-        public bool HasPrerequisites { get; set; }
-
         [Display(Name = "قیمت")]
         [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
         [Range(0, int.MaxValue, ErrorMessage = "مقدار {0} نمی تواند کمتر از {1} باشد")]
@@ -28,8 +24,6 @@ namespace ELearn.Data.Dtos.Site.Course
 
         [Required]
         public int CategoryId { get; set; }
-
-        public string PrerequisitesId { get; set; }
 
         public IFormFile File { get; set; }
     }

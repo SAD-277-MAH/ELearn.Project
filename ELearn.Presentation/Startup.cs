@@ -103,6 +103,8 @@ namespace ELearn.Presentation
                 option.AddPolicy("RequireTeacherRole", policy => policy.RequireRole("Teacher"));
                 option.AddPolicy("RequireStudentRole", policy => policy.RequireRole("Student"));
 
+                option.AddPolicy("RequireTeacherOrStudentRole", policy => policy.RequireRole("Teacher", "Student"));
+
                 option.AddPolicy("Access", policy => policy.RequireRole("System", "Admin", "Teacher", "Student"));
             });
 
@@ -204,7 +206,7 @@ namespace ELearn.Presentation
 
             app.UseCors(p => p
             .AllowAnyOrigin()
-            //.WithOrigins("http://localhost:4200")
+            //.WithOrigins("http://localhost:3000")
             .AllowAnyMethod()
             .AllowAnyHeader()
             //.WithExposedHeaders("ejUrl")
@@ -223,12 +225,14 @@ namespace ELearn.Presentation
                 RequestPath = new PathString("/wwwroot")
             });
 
-            app.UseMvc();
-
-            //app.UseEndpoints(endpoints =>
-            //{
-            //    endpoints.MapControllers();
-            //});
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapControllerRoute(
+                    name: "Default",
+                    pattern: "{controller=Swagger}/{action=Index}/{id?}"
+                );
+            });
         }
     }
 }

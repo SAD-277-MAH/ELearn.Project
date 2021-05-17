@@ -1,13 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace ELearn.Data.Dtos.Site.Course
 {
-    public class CourseForAddDto
+    public class CourseForStudentDetailedDto
     {
+        [Required]
+        public string Id { get; set; }
+
         [Display(Name = "عنوان دوره")]
         [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
         [MaxLength(50, ErrorMessage = "مقدار {0} نمی تواند بیشتر از {1} باشد")]
@@ -17,15 +19,11 @@ namespace ELearn.Data.Dtos.Site.Course
         [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
         public string Description { get; set; }
 
-        [Display(Name = "قیمت")]
+        [Display(Name = "تصویر دوره")]
         [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
-        [Range(0, int.MaxValue, ErrorMessage = "مقدار {0} نمی تواند کمتر از {1} باشد")]
-        public int Price { get; set; }
+        public string PhotoUrl { get; set; }
 
-        [Required]
-        public int CategoryId { get; set; }
-
-        [Required]
-        public IFormFile File { get; set; }
+        [Display(Name = "تعداد جلسات")]
+        public int SessionCount { get; set; }
     }
 }
