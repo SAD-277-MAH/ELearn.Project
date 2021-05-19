@@ -38,16 +38,10 @@ namespace ELearn.Data.Models
         [Required]
         public bool Status { get; set; }
 
-        public string StudentId { get; set; }
 
-        public string TeacherId { get; set; }
+        public virtual Student Student { get; set; }
 
-
-        [ForeignKey("StudentId")]
-        public Student Student { get; set; }
-
-        [ForeignKey("TeacherId")]
-        public Teacher Teacher { get; set; }
+        public virtual Teacher Teacher { get; set; }
 
 
         public virtual ICollection<Course> Courses { get; set; }

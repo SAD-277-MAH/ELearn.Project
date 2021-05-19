@@ -60,10 +60,6 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
                 var userAddRole = await _userManager.FindByNameAsync(user.UserName);
                 await _userManager.AddToRolesAsync(userAddRole, new[] { "Student" });
 
-                userAddRole.StudentId = student.Id;
-                _db.UserRepository.Update(userAddRole);
-                await _db.SaveAsync();
-
                 var resultUser = await _db.UserRepository.GetAsync(expression: u => u.Id == userAddRole.Id, includeEntity: "Student");
                 var registeredUser = _mapper.Map<UserForStudentDetailedDto>(resultUser);
                 return CreatedAtRoute("GetStudent", new { controller = "Student", id = userAddRole.Id }, registeredUser);
@@ -93,9 +89,9 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
             DateTime birthdate = new DateTime();
             try
             {
-                birthdate = pc.ToDateTime(1400, 12, 30, 0, 0, 0, 0);
+                birthdate = pc.ToDateTime(dto.BirthYear, dto.BirthMonth, dto.BirthDay, 0, 0, 0, 0);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return BadRequest("تاریخ تولد معتیر نیست");
             }
@@ -108,6 +104,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
                 {
                     BirthDate = birthdate,
                     Degree = dto.Degree,
+                    Specialty = dto.Specialty,
                     Phone = dto.Phone,
                     Address = dto.Address,
                     Description = dto.Description,
@@ -119,10 +116,6 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
 
                 var userAddRole = await _userManager.FindByNameAsync(user.UserName);
                 await _userManager.AddToRolesAsync(userAddRole, new[] { "Teacher" });
-
-                userAddRole.TeacherId = teacher.Id;
-                _db.UserRepository.Update(userAddRole);
-                await _db.SaveAsync();
 
                 var resultUser = await _db.UserRepository.GetAsync(expression: s => s.Id == userAddRole.Id, includeEntity: "Teacher");
                 var registeredUser = _mapper.Map<UserForTeacherDetailedDto>(resultUser);
