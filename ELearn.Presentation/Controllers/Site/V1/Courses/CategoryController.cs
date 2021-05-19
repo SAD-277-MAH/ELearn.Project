@@ -38,6 +38,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
             {
                 var categoryForDetailed = new CategoryForDetailedDto()
                 {
+                    Id = category.Id,
                     Name = category.Name
                 };
                 if (category.Parent != null)
@@ -63,6 +64,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
                 {
                     var categoryForDetailed = new CategoryForDetailedDto()
                     {
+                        Id = category.Id,
                         Name = category.Name
                     };
                     categoriesForDetailed.Add(categoryForDetailed);
@@ -84,6 +86,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
                 {
                     var categoryForDetailed = new CategoryForDetailedDto()
                     {
+                        Id = category.Id,
                         Name = category.Name,
                         ParentName = category.Parent.Name,
                         ParentId = category.ParentId
@@ -142,7 +145,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
                     ParentId = dto.ParentId
                 };
 
-                await _db.CategoryRepository.AddAsync(category);
+                await _db.CategoryRepository.AddAsync(newCategory);
 
                 if (await _db.SaveAsync())
                 {

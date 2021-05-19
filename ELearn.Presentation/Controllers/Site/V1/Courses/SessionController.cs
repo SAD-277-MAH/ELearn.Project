@@ -98,7 +98,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Sessions
                     if (await _db.SaveAsync())
                     {
                         var resultSession = _mapper.Map<SessionForDetailedDto>(newSession);
-                        return CreatedAtRoute(nameof(GetSession), new { id = newSession.Id }, resultSession);
+                        return CreatedAtRoute(nameof(GetSession), new { id = newSession.Id, courseId = courseId, userId = userId }, resultSession);
                     }
                     else
                     {

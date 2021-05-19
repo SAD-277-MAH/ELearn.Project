@@ -24,6 +24,26 @@ namespace ELearn.Services.Seed.Service
             _roleManager = roleManager;
         }
 
+        public void SeedCategories()
+        {
+            if (!_db.CategoryRepository.Get(c => c.Parent == null, null, "Parent").Any())
+            {
+                var categories = new List<Category>()
+                {
+                    new Category(){Name = "دانشگاهی و تخصصی"},
+                    new Category(){Name = "برنامه نویسی"},
+                    new Category(){Name = "نرم افزار های کاربردی"},
+                    new Category(){Name = "علوم پایه"}
+                };
+
+                foreach (var category in categories)
+                {
+                    _db.CategoryRepository.Add(category);
+                }
+                _db.Save();
+            }
+        }
+
         public void SeedRoles()
         {
             if (!_roleManager.Roles.Any())

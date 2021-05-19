@@ -201,6 +201,7 @@ namespace ELearn.Presentation
 
             seeder.SeedRoles();
             seeder.SeedUsers();
+            seeder.SeedCategories();
 
             app.UseHttpsRedirection();
 

@@ -6,8 +6,9 @@ namespace ELearn.Services.Seed.Interface
 {
     public interface ISeedService
     {
-        //void SeedRoles();
-        //void SeedUsers();
+        void SeedRoles();
+        void SeedUsers();
+        void SeedCategories();
         //void SeedSetting();
     }
 }
