@@ -129,14 +129,24 @@ namespace ELearn.Presentation
                    option.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
                });
 
-            services.AddHsts(option =>
-            {
-                option.MaxAge = TimeSpan.FromDays(180);
-                option.IncludeSubDomains = true;
-                option.Preload = true;
-            });
+            //services.AddHsts(option =>
+            //{
+            //    option.MaxAge = TimeSpan.FromDays(180);
+            //    option.IncludeSubDomains = true;
+            //    option.Preload = true;
+            //});
 
-            services.AddCors();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("EnableCors", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        //.AllowCredentials()
+                        .Build();
+                });
+            });
 
             services.AddOpenApiDocument(document =>
             {
@@ -203,15 +213,16 @@ namespace ELearn.Presentation
             seeder.SeedUsers();
             seeder.SeedCategories();
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
-            app.UseCors(p => p
-            .AllowAnyOrigin()
-            //.WithOrigins("http://localhost:3000")
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            //.WithExposedHeaders("ejUrl")
-            );
+            app.UseCors("EnableCors");
+            //app.UseCors(p => p
+            //.AllowAnyOrigin()
+            ////.WithOrigins("http://localhost:3000")
+            //.AllowAnyMethod()
+            //.AllowAnyHeader()
+            ////.WithExposedHeaders("ejUrl")
+            //);
 
             app.UseRouting();
 
