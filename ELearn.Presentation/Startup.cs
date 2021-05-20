@@ -129,22 +129,23 @@ namespace ELearn.Presentation
                    option.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
                });
 
-            //services.AddHsts(option =>
-            //{
-            //    option.MaxAge = TimeSpan.FromDays(180);
-            //    option.IncludeSubDomains = true;
-            //    option.Preload = true;
-            //});
+            services.AddHsts(option =>
+            {
+                option.MaxAge = TimeSpan.FromDays(180);
+                option.IncludeSubDomains = true;
+                option.Preload = true;
+            });
 
             services.AddCors(options =>
             {
                 options.AddPolicy("EnableCors", builder =>
                 {
-                    builder.AllowAnyOrigin()
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        //.AllowCredentials()
-                        .Build();
+                    builder
+                      //.AllowAnyOrigin()
+                      .WithOrigins(new string[] { "http://localhost:3000", "https://localhost:3000" })
+                      .AllowAnyHeader()
+                      .AllowAnyMethod()
+                      .Build();
                 });
             });
 
@@ -213,7 +214,7 @@ namespace ELearn.Presentation
             seeder.SeedUsers();
             seeder.SeedCategories();
 
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
 
             app.UseCors("EnableCors");
             //app.UseCors(p => p
