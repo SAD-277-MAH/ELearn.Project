@@ -136,18 +136,19 @@ namespace ELearn.Presentation
                 option.Preload = true;
             });
 
-            services.AddCors(options =>
-            {
-                options.AddPolicy("EnableCors", builder =>
-                {
-                    builder
-                      //.AllowAnyOrigin()
-                      .WithOrigins(new string[] { "http://localhost:3000", "https://localhost:3000" })
-                      .AllowAnyHeader()
-                      .AllowAnyMethod()
-                      .Build();
-                });
-            });
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy("EnableCors", builder =>
+            //    {
+            //        builder
+            //          //.AllowAnyOrigin()
+            //          .WithOrigins(new string[] { "http://localhost:3000", "https://localhost:3000" })
+            //          .AllowAnyHeader()
+            //          .AllowAnyMethod()
+            //          .Build();
+            //    });
+            //});
+            services.AddCors();
 
             services.AddOpenApiDocument(document =>
             {
@@ -214,14 +215,14 @@ namespace ELearn.Presentation
             seeder.SeedUsers();
             seeder.SeedCategories();
 
-            app.UseCors("EnableCors");
-            //app.UseCors(p => p
-            //.AllowAnyOrigin()
-            ////.WithOrigins("http://localhost:3000")
-            //.AllowAnyMethod()
-            //.AllowAnyHeader()
-            ////.WithExposedHeaders("ejUrl")
-            //);
+            //app.UseCors("EnableCors");
+            app.UseCors(p => p
+            .AllowAnyOrigin()
+            //.WithOrigins("http://localhost:3000")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            //.WithExposedHeaders("ejUrl")
+            );
 
             app.UseHttpsRedirection();
 
