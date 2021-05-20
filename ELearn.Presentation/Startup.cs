@@ -214,8 +214,6 @@ namespace ELearn.Presentation
             seeder.SeedUsers();
             seeder.SeedCategories();
 
-            app.UseHttpsRedirection();
-
             app.UseCors("EnableCors");
             //app.UseCors(p => p
             //.AllowAnyOrigin()
@@ -224,6 +222,8 @@ namespace ELearn.Presentation
             //.AllowAnyHeader()
             ////.WithExposedHeaders("ejUrl")
             //);
+
+            app.UseHttpsRedirection();
 
             app.UseRouting();
 
