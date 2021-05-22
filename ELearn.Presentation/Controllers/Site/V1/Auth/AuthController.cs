@@ -147,10 +147,14 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
                     {
                         var user = _mapper.Map<UserForDetailedDto>(result.User);
 
+                        var authUser = await _userManager.FindByNameAsync(tokenForRequestDto.UserName);
+                        var roles = await _userManager.GetRolesAsync(authUser);
+
                         return Ok(new TokenForLoginResponseDto()
                         {
                             Token = result.Token,
                             RefreshToken = result.RefreshToken,
+                            Roles = roles,
                             User = user
                         });
                     }

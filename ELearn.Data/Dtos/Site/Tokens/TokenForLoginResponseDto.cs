@@ -14,6 +14,9 @@ namespace ELearn.Data.Dtos.Site.Tokens
         [JsonProperty(PropertyName = "refresh_token")]
         public string RefreshToken { get; set; }
 
+        [JsonProperty(PropertyName = "roles")]
+        public IList<string> Roles { get; set; }
+
         [JsonProperty(PropertyName = "user")]
         public UserForDetailedDto User { get; set; }
     }
