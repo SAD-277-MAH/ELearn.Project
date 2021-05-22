@@ -98,7 +98,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Orders
                 return BadRequest(isChanged);
             }
 
-            var order = await _db.OrderRepository.GetAsync(o => o.UserId == userId && !o.Status, "OrderDetails,CouponOrders");
+            var order = await _db.OrderRepository.GetAsync(o => o.UserId == userId && !o.Status, "OrderDetails");
             if (order == null)
             {
                 return BadRequest("سبد خرید یافت نشد");
