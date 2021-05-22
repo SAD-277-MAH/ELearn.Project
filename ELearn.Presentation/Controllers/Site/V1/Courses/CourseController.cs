@@ -67,13 +67,13 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
             }
             else
             {
-                var studentCourses = await _db.UserCourseRepository.GetAsync(u => u.UserId == userId, o => o.OrderByDescending(c => c.DateCreated), "Sessions");
+                var studentCourses = await _db.UserCourseRepository.GetAsync(u => u.UserId == userId, o => o.OrderByDescending(c => c.DateCreated), string.Empty);
 
                 var coursesForDetailed = new List<CourseForStudentDetailedDto>();
 
                 foreach (var studentCourse in studentCourses)
                 {
-                    var course = await _db.CourseRepository.GetAsync(studentCourse.CourseId);
+                    var course = await _db.CourseRepository.GetAsync(c => c.Id == studentCourse.CourseId, "Sessions");
                     coursesForDetailed.Add(_mapper.Map<CourseForStudentDetailedDto>(course));
                 }
 
