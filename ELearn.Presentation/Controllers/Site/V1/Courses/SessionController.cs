@@ -71,7 +71,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Sessions
         public async Task<IActionResult> AddSession(string courseId, string userId, [FromForm] SessionForAddDto dto)
         {
             dto.Title = dto.Title.Trim();
-            var session = await _db.SessionRepository.GetAsync(b => b.Title == dto.Title, string.Empty);
+            var session = await _db.SessionRepository.GetAsync(s => s.Title == dto.Title && s.CourseId == courseId, string.Empty);
 
             if (session == null)
             {
@@ -125,7 +125,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Sessions
             if (session != null)
             {
                 dto.Title = dto.Title.Trim();
-                var sessionExist = await _db.SessionRepository.GetAsync(c => c.Title == dto.Title && c.Id != id, string.Empty);
+                var sessionExist = await _db.SessionRepository.GetAsync(s => s.Title == dto.Title && s.CourseId == courseId && s.Id != id, string.Empty);
 
                 if (sessionExist == null)
                 {
