@@ -6,6 +6,7 @@ using ELearn.Data.Dtos.Site.Course;
 using ELearn.Data.Models;
 using ELearn.Presentation.Routes.V1;
 using ELearn.Repo.Infrastructure;
+using ELearn.Services.Site.Interface;
 using ELearn.Services.Upload.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -13,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ELearn.Presentation.Controllers.Site.V1.Sessions
@@ -25,20 +27,33 @@ namespace ELearn.Presentation.Controllers.Site.V1.Sessions
         private readonly IMapper _mapper;
         private readonly IUploadService _uploadService;
         private readonly IUtilities _utilities;
+        private readonly IOrderService _orderService;
 
-        public SessionController(IUnitOfWork<DatabaseContext> db, IMapper mapper, IUploadService uploadService, IUtilities utilities)
+        public SessionController(IUnitOfWork<DatabaseContext> db, IMapper mapper, IUploadService uploadService, IUtilities utilities, IOrderService orderService)
         {
             _db = db;
             _mapper = mapper;
             _uploadService = uploadService;
             _utilities = utilities;
+            _orderService = orderService;
         }
 
-        [Authorize(Policy = "RequireTeacherRole")]
+        [Authorize(Policy = "RequireTeacherOrStudentRole")]
         [HttpGet(ApiV1Routes.Session.GetSessions)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
         public async Task<IActionResult> GetSessions(string courseId, string userId)
         {
+            if (User.HasClaim(ClaimTypes.Role, "Student") && !(await _orderService.IsUserInCourseAsync(userId, courseId)))
+            {
+                return BadRequest("این دوره را خرید نکرده اید");
+            }
+
+            var course = await _db.CourseRepository.GetAsync(courseId);
+            if (User.HasClaim(ClaimTypes.Role, "Teacher") && course.TeacherId != userId)
+            {
+                return BadRequest("دسترسی به این دوره ندارید");
+            }
+
             var sessions = await _db.SessionRepository.GetAsync(s => s.CourseId == courseId && s.Course.TeacherId == userId, o => o.OrderBy(s => s.SessionNumber), "Course");
 
             var sessionsForDetailed = _mapper.Map<List<SessionForDetailedDto>>(sessions);
@@ -46,12 +61,23 @@ namespace ELearn.Presentation.Controllers.Site.V1.Sessions
             return Ok(sessionsForDetailed);
         }
 
-        [Authorize(Policy = "RequireTeacherRole")]
+        [Authorize(Policy = "RequireTeacherOrStudentRole")]
         [HttpGet(ApiV1Routes.Session.GetSession, Name = nameof(GetSession))]
         [ServiceFilter(typeof(UserCheckIdFilter))]
         public async Task<IActionResult> GetSession(string id, string courseId, string userId)
         {
-            var session = await _db.SessionRepository.GetAsync(s => s.Id == id && s.CourseId == courseId && s.Course.TeacherId == userId, "Course");
+            if (User.HasClaim(ClaimTypes.Role, "Student") && !(await _orderService.IsUserInCourseAsync(userId, courseId)))
+            {
+                return BadRequest("این دوره را خرید نکرده اید");
+            }
+
+            var course = await _db.CourseRepository.GetAsync(courseId);
+            if (User.HasClaim(ClaimTypes.Role, "Teacher") && course.TeacherId != userId)
+            {
+                return BadRequest("دسترسی به این دوره ندارید");
+            }
+
+            var session = await _db.SessionRepository.GetAsync(s => s.Id == id && s.CourseId == courseId, "Course");
 
             if (session != null)
             {
