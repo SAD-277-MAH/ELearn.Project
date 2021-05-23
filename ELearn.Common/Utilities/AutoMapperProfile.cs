@@ -78,6 +78,7 @@ namespace ELearn.Common.Utilities
                 {
                     opt.MapFrom(src => src.Teacher.FirstName + src.Teacher.LastName);
                 });
+            CreateMap<Course, CourseForSiteDetailedDto>();
 
             CreateMap<SessionForAddDto, Session>()
                 .ForMember(dest => dest.Time, opt =>
