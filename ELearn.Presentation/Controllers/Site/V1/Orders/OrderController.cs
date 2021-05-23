@@ -106,7 +106,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Orders
 
             string host = $"{Request.Scheme}://{Request.Host}{Request.PathBase}";
             var payment = new Payment(Convert.ToInt32(order.OrderSum - order.Discount));
-            var res = payment.PaymentRequest("پرداخت فاکتور فروشگاه دوره های آموزشی", host + "/Payment/Verify/" + order.Id, User.Identity.Name);
+            var res = payment.PaymentRequest("پرداخت فاکتور فروشگاه دوره های آموزشی", host + "/Payment/Verify/" + order.Id);
 
             if (res.Result.Status == 100)
             {
