@@ -148,6 +148,10 @@ namespace ELearn.Presentation.Routes.V1
             // GET
             public const string GetOrder = BaseSite + "/{userId}/order";
 
+            // /api/v1/site/{userId}/order/history
+            // GET
+            public const string GetOrders = BaseSite + "/{userId}/order/history";
+
             // /api/v1/site/{userId}/order/{courseId}
             // POST
             public const string AddToOrder = BaseSite + "/{userId}/order/{courseId}";

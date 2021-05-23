@@ -56,6 +56,27 @@ namespace ELearn.Presentation.Controllers.Site.V1.Orders
         }
 
         [Authorize(Policy = "RequireStudentRole")]
+        [HttpGet(ApiV1Routes.Order.GetOrders)]
+        [ServiceFilter(typeof(UserCheckIdFilter))]
+        public async Task<IActionResult> GetOrders(string userId)
+        {
+            var orders = await _db.OrderRepository.GetAsync(o => o.UserId == userId && o.Status, o => o.OrderByDescending(order => order.DateCreated), "OrderDetails");
+
+            var baskets = _mapper.Map<List<OrderForDetailedDto>>(orders);
+            foreach (var basket in baskets)
+            {
+                foreach (var item in basket.OrderDetails)
+                {
+                    var course = await _db.CourseRepository.GetAsync(item.CourseId);
+                    item.Title = course.Title;
+                    item.PhotoUrl = course.PhotoUrl;
+                }
+            }
+
+            return Ok(baskets);
+        }
+
+        [Authorize(Policy = "RequireStudentRole")]
         [HttpPost(ApiV1Routes.Order.AddToOrder)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
         public async Task<IActionResult> AddToOrder(string courseId, string userId)
