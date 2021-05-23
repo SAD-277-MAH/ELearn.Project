@@ -24,6 +24,21 @@ namespace ELearn.Data.Dtos.Site.Course
         [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
         public string PhotoUrl { get; set; }
 
+        [Display(Name = "نام مدرس")]
+        [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
+        public string TeacherName { get; set; }
+
+        [Display(Name = "تعداد جلسات")]
+        [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
+        public int SessionCount { get; set; }
+
+        [Display(Name = "مدت زمان دوره")]
+        [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
+        public string Duration { get; set; }
+
+        [Required]
+        public int Status { get; set; }
+
 
         public List<SessionForDetailedDto> Sessions { get; set; }
 

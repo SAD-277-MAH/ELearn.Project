@@ -85,21 +85,53 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
         [HttpGet(ApiV1Routes.Course.GetCourse, Name = nameof(GetCourse))]
         public async Task<IActionResult> GetCourse(string id)
         {
-            var course = await _db.CourseRepository.GetAsync(c => c.Id == id, "Sessions,Comments");
+            var course = await _db.CourseRepository.GetAsync(c => c.Id == id, "Teacher,Sessions,Comments");
 
             if (course != null)
             {
                 var courseForDetailed = _mapper.Map<CourseForSiteDetailedDto>(course);
                 courseForDetailed.Comments = _mapper.Map<List<CommentForDetailedDto>>(course.Comments);
 
-                if (User.Identity.IsAuthenticated && User.HasClaim(ClaimTypes.Role, "Student") && await _orderService.IsUserInCourseAsync(User.FindFirst(ClaimTypes.NameIdentifier).Value, id))
+                if (User.Identity.IsAuthenticated && User.HasClaim(ClaimTypes.Role, "Student"))
                 {
-                    courseForDetailed.Sessions = _mapper.Map<List<SessionForDetailedDto>>(course.Sessions);
+                    if (await _orderService.IsUserInCourseAsync(User.FindFirst(ClaimTypes.NameIdentifier).Value, id))
+                    {
+                        courseForDetailed.Sessions = _mapper.Map<List<SessionForDetailedDto>>(course.Sessions.OrderBy(s => s.SessionNumber));
+                        courseForDetailed.Status = 1;
+                    }
+                    else
+                    {
+                        courseForDetailed.Sessions = null;
+                        courseForDetailed.Status = 2;
+                    }
                 }
                 else
                 {
                     courseForDetailed.Sessions = null;
+                    courseForDetailed.Status = 3;
                 }
+
+                #region Calculate Duration
+                int totalHour = 0;
+                int totalMinute = 0;
+
+                foreach (var session in course.Sessions)
+                {
+                    totalHour += session.Time.Hours;
+                    totalMinute += session.Time.Minutes;
+                }
+
+                int tempHour = 0;
+                if (totalMinute > 0)
+                {
+                    tempHour = totalMinute / 60;
+
+                }
+                int newHour = tempHour + totalHour;
+                int newMinute = totalMinute - (tempHour * 60);
+
+                courseForDetailed.Duration = $"{newHour}:{newMinute}";
+                #endregion
 
                 return Ok(courseForDetailed);
             }

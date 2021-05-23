@@ -7,6 +7,7 @@ using ELearn.Data.Dtos.Site.Users;
 using ELearn.Data.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ELearn.Common.Utilities
@@ -76,9 +77,17 @@ namespace ELearn.Common.Utilities
             CreateMap<Course, CourseForDetailedDto>()
                 .ForMember(dest => dest.TeacherName, opt =>
                 {
-                    opt.MapFrom(src => src.Teacher.FirstName + src.Teacher.LastName);
+                    opt.MapFrom(src => src.Teacher.FirstName + " " + src.Teacher.LastName);
                 });
-            CreateMap<Course, CourseForSiteDetailedDto>();
+            CreateMap<Course, CourseForSiteDetailedDto>()
+                .ForMember(dest => dest.TeacherName, opt =>
+                {
+                    opt.MapFrom(src => src.Teacher.FirstName + " " + src.Teacher.LastName);
+                })
+                .ForMember(dest => dest.SessionCount, opt =>
+                {
+                    opt.MapFrom(src => src.Sessions.Count);
+                });
 
             CreateMap<SessionForAddDto, Session>()
                 .ForMember(dest => dest.Time, opt =>
