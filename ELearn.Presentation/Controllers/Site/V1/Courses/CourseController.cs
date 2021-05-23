@@ -92,23 +92,15 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
                 var courseForDetailed = _mapper.Map<CourseForSiteDetailedDto>(course);
                 courseForDetailed.Comments = _mapper.Map<List<CommentForDetailedDto>>(course.Comments);
 
-                if (User.Identity.IsAuthenticated && User.HasClaim(ClaimTypes.Role, "Student"))
+                if (User.Identity.IsAuthenticated && User.HasClaim(ClaimTypes.Role, "Student") && await _orderService.IsUserInCourseAsync(User.FindFirst(ClaimTypes.NameIdentifier).Value, id))
                 {
-                    if (await _orderService.IsUserInCourseAsync(User.FindFirst(ClaimTypes.NameIdentifier).Value, id))
-                    {
-                        courseForDetailed.Sessions = _mapper.Map<List<SessionForDetailedDto>>(course.Sessions.OrderBy(s => s.SessionNumber));
-                        courseForDetailed.Status = 1;
-                    }
-                    else
-                    {
-                        courseForDetailed.Sessions = null;
-                        courseForDetailed.Status = 2;
-                    }
+                    courseForDetailed.Sessions = _mapper.Map<List<SessionForDetailedDto>>(course.Sessions.OrderBy(s => s.SessionNumber));
+                    courseForDetailed.Status = 1;
                 }
                 else
                 {
                     courseForDetailed.Sessions = null;
-                    courseForDetailed.Status = 3;
+                    courseForDetailed.Status = -1;
                 }
 
                 #region Calculate Duration
