@@ -1,4 +1,6 @@
 ﻿using ELearn.Common.Pagination;
+using ELearn.Common.Utilities;
+using ELearn.Data.Enums;
 using ELearn.Data.Models;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
@@ -134,21 +136,40 @@ namespace ELearn.Common.Extentions
         #endregion
 
         #region Course Paging
-        public static Expression<Func<Course, bool>> ToCourseExpression(this string Filter)
+        public static Expression<Func<Course, bool>> ToCourseExpression(this string Filter, StatusType statusType)
         {
-            Expression<Func<Course, bool>> exp;
+            Expression<Func<Course, bool>> exp = p => true;
 
-            if (string.IsNullOrEmpty(Filter) || string.IsNullOrWhiteSpace(Filter))
+            if (!string.IsNullOrEmpty(Filter) && !string.IsNullOrWhiteSpace(Filter))
             {
-                exp = null;
+                Expression<Func<Course, bool>> tempExp = (p =>
+                                                          p.Title.Contains(Filter) ||
+                                                          p.Description.Contains(Filter) ||
+                                                          p.Category.Name.Contains(Filter));
+
+                exp = CombineExpressions.CombiningExpressions<Course>(exp, tempExp, ExpressionsType.And);
             }
-            else
+
+            switch (statusType)
             {
-                exp = p =>
-                      p.Title.Contains(Filter) ||
-                      p.Description.Contains(Filter) ||
-                      p.Category.Name.Contains(Filter);
+                case StatusType.All:
+                    break;
+                case StatusType.Approved:
+                    Expression<Func<Course, bool>> tempExpApproved = p => p.Status == 1;
+                    exp = CombineExpressions.CombiningExpressions<Course>(exp, tempExpApproved, ExpressionsType.And);
+                    break;
+                case StatusType.Pending:
+                    Expression<Func<Course, bool>> tempExpPending = p => p.Status == 0;
+                    exp = CombineExpressions.CombiningExpressions<Course>(exp, tempExpPending, ExpressionsType.And);
+                    break;
+                case StatusType.Reject:
+                    Expression<Func<Course, bool>> tempExpReject = p => p.Status == -1;
+                    exp = CombineExpressions.CombiningExpressions<Course>(exp, tempExpReject, ExpressionsType.And);
+                    break;
+                default:
+                    break;
             }
+
             return exp;
         }
 

@@ -6,6 +6,7 @@ using ELearn.Common.Helpers.Interface;
 using ELearn.Data.Context;
 using ELearn.Data.Dtos.Site.Comment;
 using ELearn.Data.Dtos.Site.Course;
+using ELearn.Data.Enums;
 using ELearn.Data.Models;
 using ELearn.Presentation.Routes.V1;
 using ELearn.Repo.Infrastructure;
@@ -45,7 +46,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
         [HttpGet(ApiV1Routes.Course.GetCourses)]
         public async Task<IActionResult> GetCourses([FromQuery] PaginationDto pagination)
         {
-            var courses = await _db.CourseRepository.GetPagedListAsync(pagination, pagination.Filter.ToCourseExpression(), pagination.SortHeader.ToCourseOrderBy(pagination.SortDirection), "Teacher");
+            var courses = await _db.CourseRepository.GetPagedListAsync(pagination, pagination.Filter.ToCourseExpression(StatusType.Approved), pagination.SortHeader.ToCourseOrderBy(pagination.SortDirection), "Teacher");
             Response.AddPagination(courses.CurrentPage, courses.PageSize, courses.TotalCount, courses.TotalPages);
             var coursesForDetailed = _mapper.Map<List<CourseForDetailedDto>>(courses);
 
@@ -85,12 +86,12 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
         [HttpGet(ApiV1Routes.Course.GetCourse, Name = nameof(GetCourse))]
         public async Task<IActionResult> GetCourse(string id)
         {
-            var course = await _db.CourseRepository.GetAsync(c => c.Id == id, "Teacher,Sessions,Comments");
+            var course = await _db.CourseRepository.GetAsync(c => c.Id == id && c.Status == 1, "Teacher,Sessions,Comments");
 
             if (course != null)
             {
                 var courseForDetailed = _mapper.Map<CourseForSiteDetailedDto>(course);
-                courseForDetailed.Comments = _mapper.Map<List<CommentForDetailedDto>>(course.Comments);
+                courseForDetailed.Comments = _mapper.Map<List<CommentForDetailedDto>>(course.Comments.Where(c => c.Status == 1).OrderByDescending(c => c.DateCreated));
 
                 if (User.Identity.IsAuthenticated && User.HasClaim(ClaimTypes.Role, "Student") && await _orderService.IsUserInCourseAsync(User.FindFirst(ClaimTypes.NameIdentifier).Value, id))
                 {
@@ -136,10 +137,11 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
         [Authorize(Policy = "RequireTeacherRole")]
         [HttpPost(ApiV1Routes.Course.AddCourse)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
+        [ServiceFilter(typeof(DocumentApproveFilter))]
         public async Task<IActionResult> AddCourse(string userId, [FromForm] CourseForAddDto dto)
         {
             dto.Title = dto.Title.Trim();
-            var course = await _db.CourseRepository.GetAsync(b => b.Title == dto.Title, string.Empty);
+            var course = await _db.CourseRepository.GetAsync(c => c.Title == dto.Title, string.Empty);
 
             if (course == null)
             {
@@ -162,7 +164,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
                     var newCourse = new Course()
                     {
                         TeacherId = userId,
-                        Status = 1,
+                        Status = 0,
                         PhotoUrl = uploadResult.Url
                     };
 
@@ -194,6 +196,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
         [Authorize(Policy = "RequireTeacherRole")]
         [HttpPut(ApiV1Routes.Course.UpdateCourse)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
+        [ServiceFilter(typeof(DocumentApproveFilter))]
         public async Task<IActionResult> UpdateCourse(string id, string userId, [FromForm] CourseForUpdateDto dto)
         {
             var course = await _db.CourseRepository.GetAsync(id);
@@ -229,7 +232,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
                                 return BadRequest("خطا در آپلود تصویر");
                             }
                         }
-                        course.Status = 1;
+                        course.Status = 0;
                         course.DateModified = DateTime.Now;
 
                         _db.CourseRepository.Update(course);
@@ -259,9 +262,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
             }
         }
 
-        [Authorize(Policy = "RequireTeacherRole")]
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpDelete(ApiV1Routes.Course.DeleteCourse)]
-        [ServiceFilter(typeof(UserCheckIdFilter))]
         public async Task<IActionResult> DeleteCourse(int id)
         {
             var course = await _db.CourseRepository.GetAsync(id);

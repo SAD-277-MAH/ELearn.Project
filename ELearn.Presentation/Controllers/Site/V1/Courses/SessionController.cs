@@ -94,6 +94,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Sessions
         [Authorize(Policy = "RequireTeacherRole")]
         [HttpPost(ApiV1Routes.Session.AddSession)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
+        [ServiceFilter(typeof(DocumentApproveFilter))]
         public async Task<IActionResult> AddSession(string courseId, string userId, [FromForm] SessionForAddDto dto)
         {
             dto.Title = dto.Title.Trim();
@@ -145,6 +146,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Sessions
         [Authorize(Policy = "RequireTeacherRole")]
         [HttpPut(ApiV1Routes.Session.UpdateSession)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
+        [ServiceFilter(typeof(DocumentApproveFilter))]
         public async Task<IActionResult> UpdateSession(string id, string courseId, string userId, [FromForm] SessionForUpdateDto dto)
         {
             var session = await _db.SessionRepository.GetAsync(s => s.Id == id && s.CourseId == courseId && s.Course.TeacherId == userId, "Course");
@@ -199,6 +201,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Sessions
         [Authorize(Policy = "RequireTeacherRole")]
         [HttpDelete(ApiV1Routes.Session.DeleteSession)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
+        [ServiceFilter(typeof(DocumentApproveFilter))]
         public async Task<IActionResult> DeleteSession(string id, string courseId, string userId)
         {
             var session = await _db.SessionRepository.GetAsync(s => s.Id == id && s.CourseId == courseId && s.Course.TeacherId == userId, "Course");

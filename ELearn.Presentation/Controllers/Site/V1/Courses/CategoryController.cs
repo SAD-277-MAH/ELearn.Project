@@ -123,9 +123,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
             }
         }
 
-        //[Authorize(Policy = "RequireAdminRole")]
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpPost(ApiV1Routes.Category.AddCategory)]
-        //[ServiceFilter(typeof(UserCheckIdFilter))]
         public async Task<IActionResult> AddCategory(CategoryForAddUpdateDto dto)
         {
             var category = await _db.CategoryRepository.GetAsync(c => c.Name == dto.Name, string.Empty);
@@ -168,9 +167,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
             }
         }
 
-        //[Authorize(Policy = "RequireAdminRole")]
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpPut(ApiV1Routes.Category.UpdateCategory)]
-        //[ServiceFilter(typeof(UserCheckIdFilter))]
         public async Task<IActionResult> UpdateCategory(int id, CategoryForAddUpdateDto dto)
         {
             var category = await _db.CategoryRepository.GetAsync(id);
@@ -213,9 +211,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
             }
         }
 
-        //[Authorize(Policy = "RequireAdminRole")]
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpDelete(ApiV1Routes.Category.DeleteCategory)]
-        //[ServiceFilter(typeof(UserCheckIdFilter))]
         public async Task<IActionResult> DeleteCategory(int id)
         {
             var category = await _db.CategoryRepository.GetAsync(id);

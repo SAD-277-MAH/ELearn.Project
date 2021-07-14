@@ -22,7 +22,7 @@ namespace ELearn.Services.Site.Service
         public Response AddToOrder(string userId, string courseId)
         {
             var order = _db.OrderRepository.Get(o => o.UserId == userId && !o.Status, string.Empty);
-            var course = _db.CourseRepository.Get(courseId);
+            var course = _db.CourseRepository.Get(c => c.Id == courseId && c.Status == 1, string.Empty);
 
             if (course == null)
             {
@@ -71,7 +71,7 @@ namespace ELearn.Services.Site.Service
         public async Task<Response> AddToOrderAsync(string userId, string courseId)
         {
             var order = await _db.OrderRepository.GetAsync(o => o.UserId == userId && !o.Status, string.Empty);
-            var course = await _db.CourseRepository.GetAsync(courseId);
+            var course = await _db.CourseRepository.GetAsync(c => c.Id == courseId && c.Status == 1, string.Empty);
 
             if (course == null)
             {
@@ -205,7 +205,7 @@ namespace ELearn.Services.Site.Service
             int orderSum = 0;
             foreach (var orderDetail in orderDetails)
             {
-                var course = _db.CourseRepository.Get(orderDetail.CourseId);
+                var course = _db.CourseRepository.Get(c => c.Id == orderDetail.CourseId && c.Status == 1, string.Empty);
 
                 if (course == null)
                 {
@@ -262,7 +262,7 @@ namespace ELearn.Services.Site.Service
             int orderSum = 0;
             foreach (var orderDetail in orderDetails)
             {
-                var course = await _db.CourseRepository.GetAsync(orderDetail.CourseId);
+                var course = await _db.CourseRepository.GetAsync(c => c.Id == orderDetail.CourseId && c.Status == 1, string.Empty);
 
                 if (course == null)
                 {

@@ -41,7 +41,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
         [ServiceFilter(typeof(UserCheckIdFilter))]
         public async Task<IActionResult> AddComment(string courseId, string userId, CommentForAddDto dto)
         {
-            var course = await _db.CourseRepository.GetAsync(courseId);
+            var course = await _db.CourseRepository.GetAsync(c => c.Id == courseId && c.Status == 1, string.Empty);
 
             if (course == null)
             {
@@ -53,7 +53,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
                 CourseId = courseId,
                 UserId = userId,
                 Text = dto.Text,
-                Status = 1
+                Status = 0
             };
             await _db.CommentRepository.AddAsync(comment);
             await _db.SaveAsync();
