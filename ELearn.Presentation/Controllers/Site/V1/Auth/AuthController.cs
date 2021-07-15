@@ -283,7 +283,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
         {
             if (string.IsNullOrEmpty(UserName) || string.IsNullOrEmpty(Token))
             {
-                return NotFound();
+                return BadRequest();
             }
 
             var user = await _userManager.FindByNameAsync(UserName);
@@ -296,17 +296,17 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
                 }
                 else
                 {
-                    return NotFound();
+                    return BadRequest();
                 }
             }
             else
             {
-                return NotFound();
+                return BadRequest();
             }
         }
 
-        [HttpPost(ApiV1Routes.Auth.ActivatePhoneNumber)]
-        public async Task<IActionResult> ActivatePhoneNumber(string UserName, string Token)
+        [HttpGet(ApiV1Routes.Auth.ActivatePhoneNumber)]
+        public async Task<IActionResult> ActivatePhoneNumber([FromQuery] string UserName, [FromQuery] string Token)
         {
             if (string.IsNullOrEmpty(UserName) || string.IsNullOrEmpty(Token))
             {

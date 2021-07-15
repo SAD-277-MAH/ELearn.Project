@@ -47,7 +47,7 @@ namespace ELearn.Presentation.Routes.V1
             public const string ActivateEmail = BasePanel + "/auth/activate/email";
 
             // /api/v1/panel/auth/activate/phonenumber
-            // POST
+            // GET
             public const string ActivatePhoneNumber = BasePanel + "/auth/activate/phonenumber";
         }
         #endregion
