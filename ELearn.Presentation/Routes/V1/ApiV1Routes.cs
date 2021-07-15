@@ -36,6 +36,27 @@ namespace ELearn.Presentation.Routes.V1
         }
         #endregion
 
+        #region SettingRoutes
+        public static class Setting
+        {
+            // /api/v1/site/settings/site
+            // GET
+            public const string GetSiteSetting = BaseSite + "/settings/site";
+
+            // /api/v1/site/settings/messagesender
+            // GET
+            public const string GetMessageSenderSetting = BaseSite + "/settings/messagesender";
+
+            // /api/v1/site/settings/site
+            // PUT
+            public const string UpdateSiteSetting = BaseSite + "/settings/site";
+
+            // /api/v1/site/settings/messagesender
+            // PUT
+            public const string UpdateMessageSenderSetting = BaseSite + "/settings/messagesender";
+        }
+        #endregion
+
         #region StudentRoutes
         public static class Student
         {
@@ -54,7 +75,7 @@ namespace ELearn.Presentation.Routes.V1
         }
         #endregion
 
-        #region Category
+        #region CategoryRoutes
         public static class Category
         {
             // /api/v1/site/categories
@@ -87,7 +108,7 @@ namespace ELearn.Presentation.Routes.V1
         }
         #endregion
 
-        #region Course
+        #region CourseRoutes
         public static class Course
         {
             // /api/v1/site/courses
@@ -116,7 +137,7 @@ namespace ELearn.Presentation.Routes.V1
         }
         #endregion
 
-        #region Session
+        #region SessionRoutes
         public static class Session
         {
             // /api/v1/site/{userId}/courses/{courseId}/sessions
@@ -141,7 +162,7 @@ namespace ELearn.Presentation.Routes.V1
         }
         #endregion
 
-        #region Order
+        #region OrderRoutes
         public static class Order
         {
             // /api/v1/site/{userId}/order
@@ -166,7 +187,7 @@ namespace ELearn.Presentation.Routes.V1
         }
         #endregion
 
-        #region Comment
+        #region CommentRoutes
         public static class Comment
         {
             // /api/v1/site/courses/{courseId}/comments

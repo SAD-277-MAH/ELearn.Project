@@ -13,6 +13,7 @@ namespace ELearn.Repo.Infrastructure
         IUserRepository UserRepository { get; }
         IRoleRepository RoleRepository { get; }
         ITokenRepository TokenRepository { get; }
+        ISettingRepository SettingRepository { get; }
         IStudentRepository StudentRepository { get; }
         ITeacherRepository TeacherRepository { get; }
         ICategoryRepository CategoryRepository { get; }

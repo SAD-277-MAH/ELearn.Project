@@ -181,6 +181,7 @@ namespace ELearn.Presentation
             services.AddTransient<IOrderService, OrderService>();
 
             services.AddScoped<UserCheckIdFilter>();
+            services.AddScoped<DocumentApproveFilter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

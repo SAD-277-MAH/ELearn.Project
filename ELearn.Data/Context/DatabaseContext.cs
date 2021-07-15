@@ -24,6 +24,7 @@ namespace ELearn.Data.Context
         }
 
         public DbSet<Token> Tokens { get; set; }
+        public DbSet<Setting> Settings { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<Category> Categories { get; set; }
@@ -32,5 +33,6 @@ namespace ELearn.Data.Context
         public DbSet<UserCourse> UserCourses { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<Comment> Comments { get; set; }
     }
 }

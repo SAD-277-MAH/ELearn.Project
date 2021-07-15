@@ -9,6 +9,6 @@ namespace ELearn.Services.Seed.Interface
         void SeedRoles();
         void SeedUsers();
         void SeedCategories();
-        //void SeedSetting();
+        void SeedSetting();
     }
 }

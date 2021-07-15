@@ -63,15 +63,15 @@ namespace ELearn.Services.Seed.Service
             }
         }
 
-        //public void SeedSetting()
-        //{
-        //    if (!_db.SettingRepository.Get().Any())
-        //    {
-        //        var setting = new Setting();
-        //        _db.SettingRepository.Add(setting);
-        //        _db.Save();
-        //    }
-        //}
+        public void SeedSetting()
+        {
+            if (!_db.SettingRepository.Get().Any())
+            {
+                var setting = new Setting();
+                _db.SettingRepository.Add(setting);
+                _db.Save();
+            }
+        }
 
         public void SeedUsers()
         {
