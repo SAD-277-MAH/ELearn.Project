@@ -2,11 +2,13 @@
 using ELearn.Common.Helpers.Interface;
 using ELearn.Data.Common.ReturnMessages;
 using ELearn.Data.Context;
+using ELearn.Data.Dtos.Services;
 using ELearn.Data.Dtos.Site.Tokens;
 using ELearn.Data.Dtos.Site.Users;
 using ELearn.Data.Models;
 using ELearn.Presentation.Routes.V1;
 using ELearn.Repo.Infrastructure;
+using ELearn.Services.Site.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -29,13 +31,17 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
         private readonly IMapper _mapper;
         private readonly IUtilities _utilities;
         private readonly UserManager<User> _userManager;
+        private readonly IMessageSender _messageSender;
+        private readonly IViewRenderService _viewRenderService;
 
-        public AuthController(IUnitOfWork<DatabaseContext> db, IMapper mapper, IUtilities utilities, UserManager<User> userManager)
+        public AuthController(IUnitOfWork<DatabaseContext> db, IMapper mapper, IUtilities utilities, UserManager<User> userManager, IMessageSender messageSender, IViewRenderService viewRenderService)
         {
             _db = db;
             _mapper = mapper;
             _utilities = utilities;
             _userManager = userManager;
+            _messageSender = messageSender;
+            _viewRenderService = viewRenderService;
         }
 
         [HttpPost(ApiV1Routes.Auth.RegisterStudent)]
@@ -59,6 +65,12 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
 
                 var userAddRole = await _userManager.FindByNameAsync(user.UserName);
                 await _userManager.AddToRolesAsync(userAddRole, new[] { "Student" });
+
+                // Send SMS
+                #region Send SMS
+                var code = await _userManager.GenerateChangePhoneNumberTokenAsync(userAddRole, userAddRole.UserName);
+                _messageSender.SendSms(userAddRole.UserName, "ثبت نام شما با موفقیت انجام شد." + Environment.NewLine + "کد فعالسازی: " + code);
+                #endregion
 
                 var resultUser = await _db.UserRepository.GetAsync(expression: u => u.Id == userAddRole.Id, includeEntity: "Student");
                 var registeredUser = _mapper.Map<UserForStudentDetailedDto>(resultUser);
@@ -91,7 +103,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
             {
                 birthdate = pc.ToDateTime(dto.BirthYear, dto.BirthMonth, dto.BirthDay, 0, 0, 0, 0);
             }
-            catch (Exception ex)
+            catch
             {
                 return BadRequest("تاریخ تولد معتیر نیست");
             }
@@ -116,6 +128,21 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
 
                 var userAddRole = await _userManager.FindByNameAsync(user.UserName);
                 await _userManager.AddToRolesAsync(userAddRole, new[] { "Teacher" });
+
+                // Send SMS and Email
+                #region Send Email
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(userAddRole);
+                var activateEmailModel = new EmailUrlDto()
+                {
+                    Url = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}" + Url.Action(nameof(ActivateEmail), new { UserName = userAddRole.UserName, Token = token })
+                };
+                string emailBody = _viewRenderService.RenderToString("_ActivateEmail", activateEmailModel);
+                _messageSender.SendEmail(user.Email, "فعالسازی حساب کاربری", emailBody);
+                #endregion
+                #region Send SMS
+                var code = await _userManager.GenerateChangePhoneNumberTokenAsync(userAddRole, userAddRole.UserName);
+                _messageSender.SendSms(userAddRole.UserName, "ثبت نام شما با موفقیت انجام شد." + Environment.NewLine + "کد فعالسازی: " + code);
+                #endregion
 
                 var resultUser = await _db.UserRepository.GetAsync(expression: s => s.Id == userAddRole.Id, includeEntity: "Teacher");
                 var registeredUser = _mapper.Map<UserForTeacherDetailedDto>(resultUser);
@@ -145,6 +172,25 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
                     var result = await _utilities.GenerateNewTokenAsync(tokenForRequestDto);
                     if (result.Status)
                     {
+                        if (await _userManager.IsInRoleAsync(result.User, "Teacher"))
+                        {
+                            if (!result.User.PhoneNumberConfirmed)
+                            {
+                                return BadRequest("شماره تلفن تأیید نشده است");
+                            }
+                            if (!result.User.EmailConfirmed)
+                            {
+                                return BadRequest("ایمیل تأیید نشده است");
+                            }
+                        }
+                        else if (await _userManager.IsInRoleAsync(result.User, "Student"))
+                        {
+                            if (!result.User.PhoneNumberConfirmed)
+                            {
+                                return BadRequest("شماره تلفن تأیید نشده است");
+                            }
+                        }
+
                         var user = _mapper.Map<UserForDetailedDto>(result.User);
 
                         var authUser = await _userManager.FindByNameAsync(tokenForRequestDto.UserName);
@@ -174,6 +220,115 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
                     }
                 default:
                     return Unauthorized("خطا در اعتبارسنجی");
+            }
+        }
+
+        [HttpGet(ApiV1Routes.Auth.ResendActivationEmail)]
+        public async Task<IActionResult> ResendActivationEmail([FromQuery] string UserName)
+        {
+            var user = await _userManager.FindByNameAsync(UserName);
+
+            if (await _userManager.IsInRoleAsync(user, "Teacher"))
+            {
+                if (user.EmailConfirmed)
+                {
+                    return BadRequest("ایمیل قبلا تأیید شده است");
+                }
+
+                #region Send Email
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var activateEmailModel = new EmailUrlDto()
+                {
+                    Url = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}" + Url.Action(nameof(ActivateEmail), new { UserName = user.UserName, Token = token })
+                };
+                string emailBody = _viewRenderService.RenderToString("_ActivateEmail", activateEmailModel);
+                _messageSender.SendEmail(user.Email, "فعالسازی حساب کاربری", emailBody);
+                #endregion
+
+                return Ok();
+            }
+            else
+            {
+                return BadRequest("فقط اساتید نیاز به تأیید ایمبل دارند");
+            }
+        }
+
+        [HttpGet(ApiV1Routes.Auth.ResendActivationPhoneNumber)]
+        public async Task<IActionResult> ResendActivationPhoneNumber([FromQuery] string UserName)
+        {
+            var user = await _userManager.FindByNameAsync(UserName);
+
+            if (await _userManager.IsInRoleAsync(user, "Teacher") || await _userManager.IsInRoleAsync(user, "Student"))
+            {
+                if (user.PhoneNumberConfirmed)
+                {
+                    return BadRequest("شماره تلفن قبلا تأیید شده است");
+                }
+
+                #region Send SMS
+                var code = await _userManager.GenerateChangePhoneNumberTokenAsync(user, user.UserName);
+                _messageSender.SendSms(user.UserName, "کد فعالسازی: " + code);
+                #endregion
+
+                return Ok();
+            }
+            else
+            {
+                return BadRequest("فقط کاربران نیاز به تأیید شماره تلفن دارند");
+            }
+        }
+
+        [HttpGet(ApiV1Routes.Auth.ActivateEmail)]
+        public async Task<IActionResult> ActivateEmail([FromQuery] string UserName, [FromQuery] string Token)
+        {
+            if (string.IsNullOrEmpty(UserName) || string.IsNullOrEmpty(Token))
+            {
+                return NotFound();
+            }
+
+            var user = await _userManager.FindByNameAsync(UserName);
+            if (user != null)
+            {
+                var result = await _userManager.ConfirmEmailAsync(user, Token);
+                if (result.Succeeded)
+                {
+                    return Redirect("http://localhost:3000");
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPost(ApiV1Routes.Auth.ActivatePhoneNumber)]
+        public async Task<IActionResult> ActivatePhoneNumber(string UserName, string Token)
+        {
+            if (string.IsNullOrEmpty(UserName) || string.IsNullOrEmpty(Token))
+            {
+                return BadRequest("اطلاعات اشتباه است");
+            }
+
+            var user = await _userManager.FindByNameAsync(UserName);
+            if (user != null)
+            {
+                var result = await _userManager.ChangePhoneNumberAsync(user, UserName, Token);
+                if (result.Succeeded)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest("اطلاعات اشتباه است");
+                }
+            }
+            else
+            {
+                return BadRequest("اطلاعات اشتباه است");
             }
         }
     }

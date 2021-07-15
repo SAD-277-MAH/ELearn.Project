@@ -1,0 +1,104 @@
+﻿@model ELearn.Data.Dtos.Services.EmailUrlDto
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            direction: rtl;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            background-color: whitesmoke;
+            padding-top: 30px;
+        }
+
+        a {
+            text-decoration: none;
+            font-size: 30px;
+            padding: 10px 100px;
+            background-color: transparent;
+            color: whitesmoke;
+            display: block;
+            border-radius: 10px;
+        }
+
+            a:hover {
+                text-decoration: none;
+                background-color: #0069d9;
+                color: whitesmoke;
+            }
+
+        .main {
+            background-color: white;
+            width: 50%;
+            padding: 30px;
+        }
+
+        .center {
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .header {
+            color: black;
+        }
+
+        .des {
+            color: #155724;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 20px;
+            padding: 10px;
+        }
+
+        .link {
+            border: 1px solid #0069d9;
+            color: white !important;
+            border-radius: 10px;
+        }
+
+            .link:hover {
+                background-color: #0069d9;
+                border-radius: 10px;
+            }
+
+        .warn {
+            color: #856404;
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            border-radius: 20px;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="center main">
+        <h2 class="center header">فعالسازی حساب کاربری</h2>
+        <br />
+        <br />
+        <h3 class="center des">
+            <p>ثبت نام شما با موفقیت انجام شد</p>
+            <p>برای تکمیل فرایند ثبت نام، روی لینک زیر کلیک کنید</p>
+        </h3>
+        <br />
+        <br />
+        <h3 class="center link">
+            <a href="@Model.Url">فعالسازی</a>
+        </h3>
+        <br />
+        <br />
+        <h5 class="center warn">
+            <p>توجه!</p>
+            <p>در صورتی که این درخواست از سمت شما نیست، این ایمیل را نادیده بگیرید</p>
+        </h5>
+    </div>
+</body>
+
+</html>

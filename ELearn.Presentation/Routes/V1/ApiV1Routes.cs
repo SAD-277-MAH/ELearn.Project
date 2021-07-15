@@ -30,9 +30,25 @@ namespace ELearn.Presentation.Routes.V1
             // POST
             public const string RegisterTeacher = BasePanel + "/auth/register/teacher";
 
-            // /api/v1/panel/Auth/login
+            // /api/v1/panel/auth/login
             // POST
             public const string Login = BasePanel + "/auth/login";
+
+            // /api/v1/panel/auth/activationcode/email
+            // GET
+            public const string ResendActivationEmail = BasePanel + "/auth/activationcode/email";
+
+            // /api/v1/panel/auth/activationcode/phonenumber
+            // GET
+            public const string ResendActivationPhoneNumber = BasePanel + "/auth/activationcode/phonenumber";
+
+            // /api/v1/panel/auth/activate/email
+            // GET
+            public const string ActivateEmail = BasePanel + "/auth/activate/email";
+
+            // /api/v1/panel/auth/activate/phonenumber
+            // POST
+            public const string ActivatePhoneNumber = BasePanel + "/auth/activate/phonenumber";
         }
         #endregion
 

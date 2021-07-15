@@ -25,21 +25,19 @@ namespace ELearn.Services.Site.Service
         {
             try
             {
-                //var setting = _db.SettingRepository.Get().LastOrDefault();
+                var setting = _db.SettingRepository.Get().LastOrDefault();
 
                 MailMessage message = new MailMessage();
-                SmtpClient client = new SmtpClient("smtp.gmail.com");
+                SmtpClient client = new SmtpClient(setting.EmailSmtpClient);
 
-                message.From = new MailAddress("", "");
-                //message.From = new MailAddress(setting.EmailAddress, setting.ShopName);
+                message.From = new MailAddress(setting.EmailAddress, setting.SiteName);
                 message.To.Add(new MailAddress(To));
                 message.Subject = Subject;
                 message.Body = Body;
                 message.IsBodyHtml = true;
 
-                client.Port = 587;
-                client.Credentials = new NetworkCredential("", "");
-                //client.Credentials = new NetworkCredential(setting.EmailAddress, setting.EmailPassword);
+                client.Port = setting.EmailPort;
+                client.Credentials = new NetworkCredential(setting.EmailAddress, setting.EmailPassword);
                 client.EnableSsl = true;
 
                 client.Send(message);
@@ -53,14 +51,12 @@ namespace ELearn.Services.Site.Service
         {
             try
             {
-                //var setting = _db.SettingRepository.Get().LastOrDefault();
+                var setting = _db.SettingRepository.Get().LastOrDefault();
 
-                var sender = "";
-                //var sender = setting.SmsSender;
+                var sender = setting.SmsSender;
                 var receptor = To;
                 var message = Body;
-                var api = new KavenegarApi("");
-                //var api = new KavenegarApi(setting.SmsApi);
+                var api = new KavenegarApi(setting.SmsApi);
                 api.Send(sender, receptor, message);
             }
             catch

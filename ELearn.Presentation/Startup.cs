@@ -179,6 +179,8 @@ namespace ELearn.Presentation
             services.AddScoped<IUtilities, Utilities>();
             services.AddScoped<IUploadService, UploadService>();
             services.AddTransient<IOrderService, OrderService>();
+            services.AddTransient<IMessageSender, MessageSender>();
+            services.AddTransient<IViewRenderService, ViewRenderService>();
 
             services.AddScoped<UserCheckIdFilter>();
             services.AddScoped<DocumentApproveFilter>();
