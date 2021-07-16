@@ -228,6 +228,11 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
         {
             var user = await _userManager.FindByNameAsync(UserName);
 
+            if (user == null)
+            {
+                return BadRequest("اطلاعات اشتباه است");
+            }
+
             if (await _userManager.IsInRoleAsync(user, "Teacher"))
             {
                 if (user.EmailConfirmed)
@@ -257,6 +262,11 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
         public async Task<IActionResult> ResendActivationPhoneNumber([FromQuery] string UserName)
         {
             var user = await _userManager.FindByNameAsync(UserName);
+
+            if (user == null)
+            {
+                return BadRequest("اطلاعات اشتباه است");
+            }
 
             if (await _userManager.IsInRoleAsync(user, "Teacher") || await _userManager.IsInRoleAsync(user, "Student"))
             {
@@ -330,6 +340,47 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
             {
                 return BadRequest("اطلاعات اشتباه است");
             }
+        }
+
+        [HttpGet(ApiV1Routes.Auth.ForgetPassword)]
+        public async Task<IActionResult> ForgetPassword([FromQuery] string UserName)
+        {
+            var user = await _userManager.FindByNameAsync(UserName);
+
+            if (user == null)
+            {
+                return BadRequest("اطلاعات اشتباه است");
+            }
+
+            #region Send SMS
+            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+            _messageSender.SendSms(user.UserName, "کد تغییر رمز عبور: " + code);
+            #endregion
+
+            return Ok();
+        }
+
+        [HttpPost(ApiV1Routes.Auth.ResetPassword)]
+        public async Task<IActionResult> ResetPassword(UserForResetPasswordDto dto)
+        {
+            var user = await _userManager.FindByNameAsync(dto.UserName);
+            if (user != null)
+            {
+                var result = await _userManager.ResetPasswordAsync(user, dto.Token, dto.Password);
+                if (result.Succeeded)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest("اطلاعات اشتباه است");
+                }
+            }
+            else
+            {
+                return BadRequest("اطلاعات اشتباه است");
+            }
+
         }
     }
 }

@@ -75,6 +75,7 @@ namespace ELearn.Presentation
                 options.Password.RequiredLength = 4;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultPhoneProvider;
             }).AddEntityFrameworkStores<DatabaseContext>().AddDefaultTokenProviders().AddErrorDescriber<PersianIdentityErrorDescriber>();
 
             var tokenSettings = Configuration.GetSection("TokenSettings").Get<TokenSettings>();

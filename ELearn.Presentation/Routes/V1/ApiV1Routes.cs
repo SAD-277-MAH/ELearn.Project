@@ -49,6 +49,14 @@ namespace ELearn.Presentation.Routes.V1
             // /api/v1/panel/auth/activate/phonenumber
             // GET
             public const string ActivatePhoneNumber = BasePanel + "/auth/activate/phonenumber";
+
+            // /api/v1/panel/auth/forgetpassword
+            // GET
+            public const string ForgetPassword = BasePanel + "/auth/forgetpassword";
+
+            // /api/v1/panel/auth/resetpassword
+            // POST
+            public const string ResetPassword = BasePanel + "/auth/resetpassword";
         }
         #endregion
 
