@@ -55,7 +55,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
         }
 
         [Authorize]
-        [HttpGet(ApiV1Routes.Course.GetCourses)]
+        [HttpGet(ApiV1Routes.Course.GetCoursesForAdmin)]
         public async Task<IActionResult> GetCoursesForAdmin([FromQuery] PaginationDto pagination)
         {
             var courses = await _db.CourseRepository.GetPagedListAsync(pagination, pagination.Filter.ToCourseExpression(StatusType.All), pagination.SortHeader.ToCourseOrderBy(pagination.SortDirection), "Teacher");
