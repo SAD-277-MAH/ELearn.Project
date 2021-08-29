@@ -64,6 +64,15 @@ namespace ELearn.Common.Utilities
 
             CreateMap<CourseForAddDto, Course>();
             CreateMap<CourseForUpdateDto, Course>();
+            CreateMap<Course, CourseForAdminDetailedDto>()
+                .ForMember(dest => dest.TeacherName, opt =>
+                {
+                    opt.MapFrom(src => src.Teacher.FirstName + " " + src.Teacher.LastName);
+                })
+                .ForMember(dest => dest.SessionCount, opt =>
+                {
+                    opt.MapFrom(src => src.Sessions.Count);
+                });
             CreateMap<Course, CourseForTeacherDetailedDto>()
                 .ForMember(dest => dest.SessionCount, opt =>
                 {
@@ -128,6 +137,31 @@ namespace ELearn.Common.Utilities
                 .ForMember(dest => dest.PhotoUrl, opt =>
                 {
                     opt.MapFrom(src => src.User.PhotoUrl);
+                })
+                .ForMember(dest => dest.Date, opt =>
+                {
+                    opt.MapFrom(src => src.DateCreated.ToShamsiDateTime());
+                });
+            CreateMap<Comment, CommentForAdminDetailedDto>()
+                .ForMember(dest => dest.FirstName, opt =>
+                {
+                    opt.MapFrom(src => src.User.FirstName);
+                })
+                .ForMember(dest => dest.LastName, opt =>
+                {
+                    opt.MapFrom(src => src.User.LastName);
+                })
+                .ForMember(dest => dest.PhotoUrl, opt =>
+                {
+                    opt.MapFrom(src => src.User.PhotoUrl);
+                })
+                .ForMember(dest => dest.CourseId, opt =>
+                {
+                    opt.MapFrom(src => src.Course.Id);
+                })
+                .ForMember(dest => dest.CourseTitle, opt =>
+                {
+                    opt.MapFrom(src => src.Course.Title);
                 })
                 .ForMember(dest => dest.Date, opt =>
                 {

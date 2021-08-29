@@ -139,6 +139,10 @@ namespace ELearn.Presentation.Routes.V1
             // GET
             public const string GetCourses = BaseSite + "/courses";
 
+            // /api/v1/site/courses/admin
+            // GET
+            public const string GetCoursesForAdmin = BaseSite + "/courses/admin";
+
             // /api/v1/site/{userId}/courses
             // GET
             public const string GetUserCourses = BaseSite + "/{userId}/courses";
@@ -154,6 +158,10 @@ namespace ELearn.Presentation.Routes.V1
             // /api/v1/site/{userId}/courses/{id}
             // PUT
             public const string UpdateCourse = BaseSite + "/{userId}/courses/{id}";
+
+            // /api/v1/site/courses/{id}/status
+            // PATCH
+            public const string UpdateCourseStatus = BaseSite + "/courses/{id}/status";
 
             // /api/v1/site/courses/{id}
             // DELETE
@@ -218,9 +226,17 @@ namespace ELearn.Presentation.Routes.V1
             // GET
             public const string GetComments = BaseSite + "/courses/{courseId}/comments";
 
+            // /api/v1/site/comments/admin
+            // GET
+            public const string GetCommentsForAdmin = BaseSite + "/comments/admin";
+
             // /api/v1/site/{userId}/courses/{courseId}/comments
             // POST
             public const string AddComment = BaseSite + "/{userId}/courses/{courseId}/comments";
+
+            // /api/v1/site/comments/{id}/status
+            // PATCH
+            public const string UpdateCommentStatus = BaseSite + "/comments/{id}/status";
         }
         #endregion
     }

@@ -197,5 +197,53 @@ namespace ELearn.Common.Extentions
             }
         }
         #endregion
+
+        #region Comment Paging
+        public static Expression<Func<Comment, bool>> ToCommentExpression(this string Filter, StatusType statusType)
+        {
+            Expression<Func<Comment, bool>> exp = p => true;
+
+            if (!string.IsNullOrEmpty(Filter) && !string.IsNullOrWhiteSpace(Filter))
+            {
+                Expression<Func<Comment, bool>> tempExp = (p => p.Text.Contains(Filter));
+
+                exp = CombineExpressions.CombiningExpressions<Comment>(exp, tempExp, ExpressionsType.And);
+            }
+
+            switch (statusType)
+            {
+                case StatusType.All:
+                    break;
+                case StatusType.Approved:
+                    Expression<Func<Comment, bool>> tempExpApproved = p => p.Status == 1;
+                    exp = CombineExpressions.CombiningExpressions<Comment>(exp, tempExpApproved, ExpressionsType.And);
+                    break;
+                case StatusType.Pending:
+                    Expression<Func<Comment, bool>> tempExpPending = p => p.Status == 0;
+                    exp = CombineExpressions.CombiningExpressions<Comment>(exp, tempExpPending, ExpressionsType.And);
+                    break;
+                case StatusType.Reject:
+                    Expression<Func<Comment, bool>> tempExpReject = p => p.Status == -1;
+                    exp = CombineExpressions.CombiningExpressions<Comment>(exp, tempExpReject, ExpressionsType.And);
+                    break;
+                default:
+                    break;
+            }
+
+            return exp;
+        }
+
+        public static string ToCommentOrderBy(this string SortHeader, string SortDirection)
+        {
+            if (string.IsNullOrEmpty(SortHeader) || string.IsNullOrWhiteSpace(SortHeader))
+            {
+                return "";
+            }
+            else
+            {
+                return SortHeader.FirstCharToUpper() + "," + SortDirection;
+            }
+        }
+        #endregion
     }
 }

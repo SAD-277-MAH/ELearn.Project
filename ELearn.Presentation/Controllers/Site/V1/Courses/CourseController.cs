@@ -5,6 +5,7 @@ using ELearn.Common.Filters;
 using ELearn.Common.Helpers.Interface;
 using ELearn.Data.Context;
 using ELearn.Data.Dtos.Site.Comment;
+using ELearn.Data.Dtos.Site.Common;
 using ELearn.Data.Dtos.Site.Course;
 using ELearn.Data.Enums;
 using ELearn.Data.Models;
@@ -53,6 +54,17 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
             return Ok(coursesForDetailed);
         }
 
+        [Authorize]
+        [HttpGet(ApiV1Routes.Course.GetCourses)]
+        public async Task<IActionResult> GetCoursesForAdmin([FromQuery] PaginationDto pagination)
+        {
+            var courses = await _db.CourseRepository.GetPagedListAsync(pagination, pagination.Filter.ToCourseExpression(StatusType.All), pagination.SortHeader.ToCourseOrderBy(pagination.SortDirection), "Teacher");
+            Response.AddPagination(courses.CurrentPage, courses.PageSize, courses.TotalCount, courses.TotalPages);
+            var coursesForDetailed = _mapper.Map<List<CourseForAdminDetailedDto>>(courses);
+
+            return Ok(coursesForDetailed);
+        }
+
         [Authorize(Policy = "RequireTeacherOrStudentRole")]
         [HttpGet(ApiV1Routes.Course.GetUserCourses)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
@@ -93,7 +105,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
                 var courseForDetailed = _mapper.Map<CourseForSiteDetailedDto>(course);
                 courseForDetailed.Comments = _mapper.Map<List<CommentForDetailedDto>>(course.Comments.Where(c => c.Status == 1).OrderByDescending(c => c.DateCreated));
 
-                if (User.Identity.IsAuthenticated && User.HasClaim(ClaimTypes.Role, "Student") && await _orderService.IsUserInCourseAsync(User.FindFirst(ClaimTypes.NameIdentifier).Value, id))
+                if (User.Identity.IsAuthenticated && ((User.HasClaim(ClaimTypes.Role, "Student") && await _orderService.IsUserInCourseAsync(User.FindFirst(ClaimTypes.NameIdentifier).Value, id)) || User.HasClaim(ClaimTypes.Role, "Admin")))
                 {
                     courseForDetailed.Sessions = _mapper.Map<List<SessionForDetailedDto>>(course.Sessions.OrderBy(s => s.SessionNumber));
                     courseForDetailed.Status = 1;
@@ -262,7 +274,31 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
             }
         }
 
-        [Authorize(Policy = "RequireAdminRole")]
+        [Authorize]
+        [HttpPatch(ApiV1Routes.Course.UpdateCourse)]
+        public async Task<IActionResult> UpdateCourseStatus(string id, UpdateStatusDto dto)
+        {
+            var course = await _db.CourseRepository.GetAsync(id);
+            if (course != null)
+            {
+                course.Status = dto.Status;
+                _db.CourseRepository.Update(course);
+                if (await _db.SaveAsync())
+                {
+                    return NoContent();
+                }
+                else
+                {
+                    return BadRequest("خطا در ثبت تغییرات");
+                }
+            }
+            else
+            {
+                return BadRequest("دوره یافت نشد");
+            }
+        }
+
+        [Authorize]
         [HttpDelete(ApiV1Routes.Course.DeleteCourse)]
         public async Task<IActionResult> DeleteCourse(int id)
         {
