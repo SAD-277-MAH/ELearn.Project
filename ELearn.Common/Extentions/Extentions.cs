@@ -181,17 +181,13 @@ namespace ELearn.Common.Extentions
             }
             else
             {
-                if (SortHeader == "categoryName")
+                if (SortHeader.ToLower() == "categoryname")
                 {
                     return "Category.Name" + "," + SortDirection;
                 }
-                else if (SortHeader == "teacherName")
+                else if (SortHeader.ToLower() == "teachername")
                 {
                     return "Teacher.UserName" + "," + SortDirection;
-                }
-                else if (SortHeader == "prerequisitesTitle")
-                {
-                    return "Prerequisites.Title" + "," + SortDirection;
                 }
                 return SortHeader.FirstCharToUpper() + "," + SortDirection;
             }
