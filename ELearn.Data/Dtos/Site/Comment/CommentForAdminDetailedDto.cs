@@ -6,6 +6,8 @@ namespace ELearn.Data.Dtos.Site.Comment
 {
     public class CommentForAdminDetailedDto
     {
+        public string Id { get; set; }
+
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
