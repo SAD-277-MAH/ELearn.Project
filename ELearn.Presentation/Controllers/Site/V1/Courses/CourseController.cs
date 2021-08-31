@@ -99,7 +99,11 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
         public async Task<IActionResult> GetCourse(string id)
         {
             var course = await _db.CourseRepository.GetAsync(c => c.Id == id && c.Status == 1, "Teacher,Sessions,Comments");
-
+            if (User.Identity.IsAuthenticated && User.HasClaim(ClaimTypes.Role, "Admin"))
+            {
+                course = await _db.CourseRepository.GetAsync(c => c.Id == id, "Teacher,Sessions,Comments");
+            }
+             
             if (course != null)
             {
                 var courseForDetailed = _mapper.Map<CourseForSiteDetailedDto>(course);
