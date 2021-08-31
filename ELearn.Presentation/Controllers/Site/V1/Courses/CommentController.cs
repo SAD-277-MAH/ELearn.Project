@@ -42,9 +42,26 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
 
         [Authorize]
         [HttpGet(ApiV1Routes.Comment.GetCommentsForAdmin)]
-        public async Task<IActionResult> GetCommentsForAdmin([FromQuery] PaginationDto pagination)
+        public async Task<IActionResult> GetCommentsForAdmin([FromQuery] PaginationDto pagination, [FromQuery] int? status)
         {
-            var comments = await _db.CommentRepository.GetPagedListAsync(pagination, pagination.Filter.ToCommentExpression(StatusType.All), pagination.SortHeader.ToCommentOrderBy(pagination.SortDirection), "User,Course");
+            StatusType statusType = StatusType.All;
+            if (status != null)
+            {
+                if (status == -1)
+                {
+                    statusType = StatusType.Reject;
+                }
+                else if (status == 0)
+                {
+                    statusType = StatusType.Pending;
+                }
+                else if (status == 1)
+                {
+                    statusType = StatusType.Approved;
+                }
+            }
+
+            var comments = await _db.CommentRepository.GetPagedListAsync(pagination, pagination.Filter.ToCommentExpression(statusType), pagination.SortHeader.ToCommentOrderBy(pagination.SortDirection), "User,Course");
             Response.AddPagination(comments.CurrentPage, comments.PageSize, comments.TotalCount, comments.TotalPages);
             var commentsDetailed = _mapper.Map<List<CommentForAdminDetailedDto>>(comments);
             return Ok(commentsDetailed);

@@ -56,9 +56,26 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
 
         [Authorize]
         [HttpGet(ApiV1Routes.Course.GetCoursesForAdmin)]
-        public async Task<IActionResult> GetCoursesForAdmin([FromQuery] PaginationDto pagination)
+        public async Task<IActionResult> GetCoursesForAdmin([FromQuery] PaginationDto pagination, [FromQuery] int? status)
         {
-            var courses = await _db.CourseRepository.GetPagedListAsync(pagination, pagination.Filter.ToCourseExpression(StatusType.All), pagination.SortHeader.ToCourseOrderBy(pagination.SortDirection), "Teacher");
+            StatusType statusType = StatusType.All;
+            if (status != null)
+            {
+                if (status == -1)
+                {
+                    statusType = StatusType.Reject;
+                }
+                else if (status == 0)
+                {
+                    statusType = StatusType.Pending;
+                }
+                else if (status == 1)
+                {
+                    statusType = StatusType.Approved;
+                }
+            }
+
+            var courses = await _db.CourseRepository.GetPagedListAsync(pagination, pagination.Filter.ToCourseExpression(statusType), pagination.SortHeader.ToCourseOrderBy(pagination.SortDirection), "Teacher");
             Response.AddPagination(courses.CurrentPage, courses.PageSize, courses.TotalCount, courses.TotalPages);
             var coursesForDetailed = _mapper.Map<List<CourseForAdminDetailedDto>>(courses);
 

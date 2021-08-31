@@ -18,6 +18,8 @@ namespace ELearn.Data.Dtos.Site.Comment
 
         public string Text { get; set; }
 
+        public int Status { get; set; }
+
         public string CourseId { get; set; }
 
         public string CourseTitle { get; set; }
