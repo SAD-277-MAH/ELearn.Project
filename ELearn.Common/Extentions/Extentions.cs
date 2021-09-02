@@ -241,5 +241,128 @@ namespace ELearn.Common.Extentions
             }
         }
         #endregion
+
+        //#region Document Paging
+        //public static Expression<Func<Document, bool>> ToDocumentExpression(this string Filter, StatusType statusType)
+        //{
+        //    Expression<Func<Document, bool>> exp = p => true;
+
+        //    if (!string.IsNullOrEmpty(Filter) && !string.IsNullOrWhiteSpace(Filter))
+        //    {
+        //        Expression<Func<Document, bool>> tempExp = (p =>    p.Teacher.UserName.ToLower().Contains(Filter.ToLower())
+        //                                                         || p.Teacher.LastName.Contains(Filter));
+
+        //        exp = CombineExpressions.CombiningExpressions<Document>(exp, tempExp, ExpressionsType.And);
+        //    }
+
+        //    switch (statusType)
+        //    {
+        //        case StatusType.All:
+        //            break;
+        //        case StatusType.Approved:
+        //            Expression<Func<Document, bool>> tempExpApproved = p => p.Status == 1;
+        //            exp = CombineExpressions.CombiningExpressions<Document>(exp, tempExpApproved, ExpressionsType.And);
+        //            break;
+        //        case StatusType.Pending:
+        //            Expression<Func<Document, bool>> tempExpPending = p => p.Status == 0;
+        //            exp = CombineExpressions.CombiningExpressions<Document>(exp, tempExpPending, ExpressionsType.And);
+        //            break;
+        //        case StatusType.Reject:
+        //            Expression<Func<Document, bool>> tempExpReject = p => p.Status == -1;
+        //            exp = CombineExpressions.CombiningExpressions<Document>(exp, tempExpReject, ExpressionsType.And);
+        //            break;
+        //        default:
+        //            break;
+        //    }
+
+        //    return exp;
+        //}
+
+        //public static string ToDocumentOrderBy(this string SortHeader, string SortDirection)
+        //{
+        //    if (string.IsNullOrEmpty(SortHeader) || string.IsNullOrWhiteSpace(SortHeader))
+        //    {
+        //        return "";
+        //    }
+        //    else
+        //    {
+        //        if (SortHeader.ToLower() == "username")
+        //        {
+        //            return "Teacher.UserName" + "," + SortDirection;
+        //        }
+        //        else if (SortHeader.ToLower() == "lastname")
+        //        {
+        //            return "Teacher.LastName" + "," + SortDirection;
+        //        }
+        //        return SortHeader.FirstCharToUpper() + "," + SortDirection;
+        //    }
+        //}
+        //#endregion
+
+        #region Teacher Paging
+        public static Expression<Func<Teacher, bool>> ToTeacherExpression(this string Filter, StatusType statusType)
+        {
+            Expression<Func<Teacher, bool>> exp = p => true;
+
+            if (!string.IsNullOrEmpty(Filter) && !string.IsNullOrWhiteSpace(Filter))
+            {
+                Expression<Func<Teacher, bool>> tempExp = (p => p.User.UserName.Contains(Filter)
+                                                                || p.User.FirstName.Contains(Filter)
+                                                                || p.User.LastName.Contains(Filter));
+
+                exp = CombineExpressions.CombiningExpressions<Teacher>(exp, tempExp, ExpressionsType.And);
+            }
+
+            switch (statusType)
+            {
+                case StatusType.All:
+                    break;
+                case StatusType.Approved:
+                    Expression<Func<Teacher, bool>> tempExpApproved = p => p.Status == 1;
+                    exp = CombineExpressions.CombiningExpressions<Teacher>(exp, tempExpApproved, ExpressionsType.And);
+                    break;
+                case StatusType.Pending:
+                    Expression<Func<Teacher, bool>> tempExpPending = p => p.Status == 0;
+                    exp = CombineExpressions.CombiningExpressions<Teacher>(exp, tempExpPending, ExpressionsType.And);
+                    break;
+                case StatusType.Reject:
+                    Expression<Func<Teacher, bool>> tempExpReject = p => p.Status == -1;
+                    exp = CombineExpressions.CombiningExpressions<Teacher>(exp, tempExpReject, ExpressionsType.And);
+                    break;
+                default:
+                    break;
+            }
+
+            return exp;
+        }
+
+        public static string ToTeacherOrderBy(this string SortHeader, string SortDirection)
+        {
+            if (string.IsNullOrEmpty(SortHeader) || string.IsNullOrWhiteSpace(SortHeader))
+            {
+                return "";
+            }
+            else
+            {
+                if (SortHeader.ToLower() == "username")
+                {
+                    return "User.UserName" + "," + SortDirection;
+                }
+                else if (SortHeader.ToLower() == "phonenumber")
+                {
+                    return "User.PhoneNumber" + "," + SortDirection;
+                }
+                else if (SortHeader.ToLower() == "firstname")
+                {
+                    return "User.FirstName" + "," + SortDirection;
+                }
+                else if (SortHeader.ToLower() == "lastname")
+                {
+                    return "User.LastName" + "," + SortDirection;
+                }
+                return SortHeader.FirstCharToUpper() + "," + SortDirection;
+            }
+        }
+        #endregion
     }
 }

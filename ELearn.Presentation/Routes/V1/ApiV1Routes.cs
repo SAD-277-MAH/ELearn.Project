@@ -93,6 +93,10 @@ namespace ELearn.Presentation.Routes.V1
         #region TeacherRoutes
         public static class Teacher
         {
+            // /api/v1/panel/teachers/admin
+            // GET
+            public const string GetTeachersForAdmin = BasePanel + "/teachers/admin";
+
             // /api/v1/panel/teachers/{id}
             // GET
             public const string GetTeacher = BasePanel + "/teachers/{id}";
@@ -237,6 +241,31 @@ namespace ELearn.Presentation.Routes.V1
             // /api/v1/site/comments/{id}/status
             // PATCH
             public const string UpdateCommentStatus = BaseSite + "/comments/{id}/status";
+        }
+        #endregion
+
+        #region DocumentRoutes
+        public static class Document
+        {
+            // /api/v1/panel/{userId}/documents
+            // GET
+            public const string GetDocuments = BasePanel + "/{userId}/documents";
+
+            // /api/v1/panel/{userId}/documents/admin
+            // GET
+            public const string GetDocumentsForAdmin = BasePanel + "/{userId}/documents/admin";
+
+            // /api/v1/panel/{userId}/documents/{id}
+            // GET
+            public const string GetDocument = BasePanel + "/{userId}/documents/{id}";
+
+            // /api/v1/panel/{userId}/documents
+            // POST
+            public const string AddDocument = BasePanel + "/{userId}/documents";
+
+            // /api/v1/panel/{userId}/documents/status
+            // PATCH
+            public const string UpdateDocumentStatus = BasePanel + "/{userId}/documents/status";
         }
         #endregion
     }

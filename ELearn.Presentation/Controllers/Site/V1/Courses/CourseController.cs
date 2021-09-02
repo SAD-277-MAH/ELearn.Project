@@ -296,7 +296,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
         }
 
         [Authorize]
-        [HttpPatch(ApiV1Routes.Course.UpdateCourse)]
+        [HttpPatch(ApiV1Routes.Course.UpdateCourseStatus)]
         public async Task<IActionResult> UpdateCourseStatus(string id, UpdateStatusDto dto)
         {
             var course = await _db.CourseRepository.GetAsync(id);

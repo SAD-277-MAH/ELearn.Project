@@ -7,7 +7,7 @@ namespace ELearn.Data.Dtos.Site.Users
 {
     public class UserForTeacherDetailedDto
     {
-        public string Id { get; set; }
+        public string UserId { get; set; }
 
         [Display(Name = "نام کاربری")]
         [Required(ErrorMessage = "مقدار {0} را وارد کنید")]

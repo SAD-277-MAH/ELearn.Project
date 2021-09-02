@@ -23,6 +23,7 @@ namespace ELearn.Repo.Infrastructure
         IOrderRepository OrderRepository { get; }
         IOrderDetailRepository OrderDetailRepository { get; }
         ICommentRepository CommentRepository { get; }
+        IDocumentRepository DocumentRepository { get; }
 
         bool Save();
         Task<bool> SaveAsync();

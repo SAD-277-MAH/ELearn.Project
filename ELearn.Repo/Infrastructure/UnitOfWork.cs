@@ -188,6 +188,19 @@ namespace ELearn.Repo.Infrastructure
                 return commentRepository;
             }
         }
+
+        private IDocumentRepository documentRepository;
+        public IDocumentRepository DocumentRepository
+        {
+            get
+            {
+                if (documentRepository == null)
+                {
+                    documentRepository = new DocumentRepository(_db);
+                }
+                return documentRepository;
+            }
+        }
         #endregion
 
         #region Save

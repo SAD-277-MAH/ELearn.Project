@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
+using Banking.Data.Dtos.Common.Pagination;
+using ELearn.Common.Extentions;
 using ELearn.Common.Filters;
 using ELearn.Data.Context;
 using ELearn.Data.Dtos.Site.Users;
+using ELearn.Data.Enums;
 using ELearn.Presentation.Routes.V1;
 using ELearn.Repo.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -27,6 +30,35 @@ namespace ELearn.Presentation.Controllers.Site.V1.Users
         {
             _db = db;
             _mapper = mapper;
+        }
+
+        [Authorize]
+        [HttpGet(ApiV1Routes.Teacher.GetTeachersForAdmin)]
+        public async Task<IActionResult> GetTeachersForAdmin([FromQuery] PaginationDto pagination, [FromQuery] int? status)
+        {
+            StatusType statusType = StatusType.All;
+            if (status != null)
+            {
+                if (status == -1)
+                {
+                    statusType = StatusType.Reject;
+                }
+                else if (status == 0)
+                {
+                    statusType = StatusType.Pending;
+                }
+                else if (status == 1)
+                {
+                    statusType = StatusType.Approved;
+                }
+            }
+
+            var teachers = await _db.TeacherRepository.GetPagedListAsync(pagination, pagination.Filter.ToTeacherExpression(statusType), pagination.SortHeader.ToTeacherOrderBy(pagination.SortDirection), "User");
+            Response.AddPagination(teachers.CurrentPage, teachers.PageSize, teachers.TotalCount, teachers.TotalPages);
+            
+            var teachersForDetailed = _mapper.Map<List<TeacherForAdminDetailedDto>>(teachers);
+
+            return Ok(teachersForDetailed);
         }
 
         [HttpGet(ApiV1Routes.Teacher.GetTeacher, Name = nameof(GetTeacher))]

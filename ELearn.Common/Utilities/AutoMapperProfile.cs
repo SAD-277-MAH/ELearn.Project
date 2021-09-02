@@ -2,6 +2,7 @@
 using ELearn.Common.Extentions;
 using ELearn.Data.Dtos.Site.Comment;
 using ELearn.Data.Dtos.Site.Course;
+using ELearn.Data.Dtos.Site.Document;
 using ELearn.Data.Dtos.Site.Order;
 using ELearn.Data.Dtos.Site.Users;
 using ELearn.Data.Models;
@@ -60,6 +61,32 @@ namespace ELearn.Common.Utilities
                 .ForMember(dest => dest.Status, opt =>
                 {
                     opt.MapFrom(src => src.Teacher.Status);
+                });
+
+            CreateMap<Teacher, TeacherForAdminDetailedDto>()
+                .ForMember(dest => dest.UserName, opt =>
+                {
+                    opt.MapFrom(src => src.User.UserName);
+                })
+                .ForMember(dest => dest.FirstName, opt =>
+                {
+                    opt.MapFrom(src => src.User.FirstName);
+                })
+                .ForMember(dest => dest.LastName, opt =>
+                {
+                    opt.MapFrom(src => src.User.LastName);
+                })
+                .ForMember(dest => dest.NationalCode, opt =>
+                {
+                    opt.MapFrom(src => src.User.NationalCode);
+                })
+                .ForMember(dest => dest.PhotoUrl, opt =>
+                {
+                    opt.MapFrom(src => src.User.PhotoUrl);
+                })
+                .ForMember(dest => dest.RegisterDate, opt =>
+                {
+                    opt.MapFrom(src => src.User.RegisterDate);
                 });
 
             CreateMap<CourseForAddDto, Course>();
@@ -166,6 +193,17 @@ namespace ELearn.Common.Utilities
                 .ForMember(dest => dest.Date, opt =>
                 {
                     opt.MapFrom(src => src.DateCreated.ToShamsiDateTime());
+                });
+
+            CreateMap<Document, DocumentForDetailedDto>()
+                .ForMember(dest => dest.Status, opt =>
+                {
+                    opt.MapFrom(src => src.Teacher.Status);
+                });
+            CreateMap<Document, DocumentForAdminDetailedDto>()
+                .ForMember(dest => dest.Status, opt =>
+                {
+                    opt.MapFrom(src => src.Teacher.Status);
                 });
         }
     }
