@@ -18,7 +18,6 @@ using System.Threading.Tasks;
 
 namespace ELearn.Presentation.Controllers.Site.V1.Users
 {
-    [Authorize(Policy = "RequireTeacherRole")]
     [ApiExplorerSettings(GroupName = "v1_Site")]
     [ApiController]
     public class TeacherController : ControllerBase
@@ -61,6 +60,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Users
             return Ok(teachersForDetailed);
         }
 
+        [Authorize(Policy = "RequireTeacherRole")]
         [HttpGet(ApiV1Routes.Teacher.GetTeacher, Name = nameof(GetTeacher))]
         [ServiceFilter(typeof(UserCheckIdFilter))]
         public async Task<IActionResult> GetTeacher(string id)
