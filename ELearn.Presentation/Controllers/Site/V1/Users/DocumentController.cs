@@ -65,7 +65,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Users
         }
 
         [Authorize(Policy = "RequireTeacherRole")]
-        [HttpPost(ApiV1Routes.Document.GetDocument)]
+        [HttpGet(ApiV1Routes.Document.GetDocument)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
         public async Task<IActionResult> GetDocument(string id, string userId)
         {
