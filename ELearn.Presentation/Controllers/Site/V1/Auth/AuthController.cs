@@ -126,7 +126,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
                     Phone = dto.Phone,
                     Address = dto.Address,
                     Description = dto.Description,
-                    Status = 0,
+                    Status = -1,
                     UserId = user.Id
                 };
                 await _db.TeacherRepository.AddAsync(teacher);
