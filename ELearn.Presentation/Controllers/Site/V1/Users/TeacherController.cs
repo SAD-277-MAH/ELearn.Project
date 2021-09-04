@@ -33,6 +33,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Users
 
         [Authorize]
         [HttpGet(ApiV1Routes.Teacher.GetTeachersForAdmin)]
+        [ProducesResponseType(typeof(List<TeacherForAdminDetailedDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetTeachersForAdmin([FromQuery] PaginationDto pagination, [FromQuery] int? status)
         {
             StatusType statusType = StatusType.All;
@@ -63,6 +64,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Users
         [Authorize(Policy = "RequireTeacherRole")]
         [HttpGet(ApiV1Routes.Teacher.GetTeacher, Name = nameof(GetTeacher))]
         [ServiceFilter(typeof(UserCheckIdFilter))]
+        [ProducesResponseType(typeof(UserForTeacherDetailedDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetTeacher(string id)
         {
             var user = await _db.UserRepository.GetAsync(expression: u => u.Id == id, includeEntity: "Teacher");

@@ -2,6 +2,7 @@
 using ELearn.Common.Filters;
 using ELearn.Data.Context;
 using ELearn.Data.Dtos.Site.Order;
+using ELearn.Data.ReturnMessages;
 using ELearn.Presentation.Routes.V1;
 using ELearn.Repo.Infrastructure;
 using ELearn.Services.Site.Interface;
@@ -34,6 +35,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Orders
         [Authorize(Policy = "RequireStudentRole")]
         [HttpGet(ApiV1Routes.Order.GetOrder)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
+        [ProducesResponseType(typeof(OrderForReturnDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetOrder(string userId)
         {
             var result = await _orderService.UpdateOrderAsync(userId);
@@ -58,6 +60,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Orders
         [Authorize(Policy = "RequireStudentRole")]
         [HttpGet(ApiV1Routes.Order.GetOrders)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
+        [ProducesResponseType(typeof(List<OrderForDetailedDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetOrders(string userId)
         {
             var orders = await _db.OrderRepository.GetAsync(o => o.UserId == userId && o.Status, o => o.OrderByDescending(order => order.DateCreated), "OrderDetails");
@@ -79,6 +82,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Orders
         [Authorize(Policy = "RequireStudentRole")]
         [HttpPost(ApiV1Routes.Order.AddToOrder)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
+        [ProducesResponseType(typeof(Response), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Response), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddToOrder(string courseId, string userId)
         {
             var result = await _orderService.AddToOrderAsync(userId, courseId);
@@ -95,6 +100,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Orders
         [Authorize(Policy = "RequireStudentRole")]
         [HttpDelete(ApiV1Routes.Order.RemoveFromOrder)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
+        [ProducesResponseType(typeof(Response), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Response), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RemoveFromOrder(string courseId, string userId)
         {
             var result = await _orderService.RemoveFromOrderAsync(userId, courseId);
@@ -111,6 +118,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Orders
         [Authorize(Policy = "RequireStudentRole")]
         [HttpGet(ApiV1Routes.Order.Payment)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Response), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Payment(string userId)
         {
             var isChanged = await _orderService.UpdateOrderAsync(userId);
@@ -122,7 +131,9 @@ namespace ELearn.Presentation.Controllers.Site.V1.Orders
             var order = await _db.OrderRepository.GetAsync(o => o.UserId == userId && !o.Status, "OrderDetails");
             if (order == null)
             {
-                return BadRequest("سبد خرید یافت نشد");
+                var returnResult = new Response(false, "سبد خرید یافت نشد");
+
+                return BadRequest(returnResult);
             }
 
             string host = $"{Request.Scheme}://{Request.Host}{Request.PathBase}";
@@ -135,7 +146,9 @@ namespace ELearn.Presentation.Controllers.Site.V1.Orders
             }
             else
             {
-                return BadRequest("درحال حاضر درگاه بانک آماده نیست");
+                var returnResult = new Response(false, "درحال حاضر درگاه بانک آماده نیست");
+
+                return BadRequest(returnResult);
             }
         }
     }

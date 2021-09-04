@@ -36,6 +36,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Users
         [Authorize(Policy = "RequireTeacherRole")]
         [HttpGet(ApiV1Routes.Document.GetDocuments)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
+        [ProducesResponseType(typeof(List<DocumentForDetailedDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetDocuments(string userId)
         {
             var documents = await _db.DocumentRepository.GetAsync(d => d.TeacherId == userId, o => o.OrderByDescending(c => c.DateCreated), "Teacher");
@@ -47,6 +48,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Users
 
         [Authorize]
         [HttpGet(ApiV1Routes.Document.GetDocumentsForAdmin)]
+        [ProducesResponseType(typeof(DocumentForAdminCompleteDetailedDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetDocumentsForAdmin(string userId)
         {
             var user = await _db.UserRepository.GetAsync(t => t.Id == userId, "Teacher");
@@ -67,6 +69,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Users
         [Authorize(Policy = "RequireTeacherRole")]
         [HttpGet(ApiV1Routes.Document.GetDocument)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
+        [ProducesResponseType(typeof(DocumentForDetailedDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetDocument(string id, string userId)
         {
             var document = await _db.DocumentRepository.GetAsync(d => d.Id == id && d.TeacherId == userId, o => o.OrderByDescending(c => c.DateCreated), string.Empty);
@@ -79,6 +82,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Users
         [Authorize(Policy = "RequireTeacherRole")]
         [HttpPost(ApiV1Routes.Document.AddDocument)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
+        [ProducesResponseType(typeof(DocumentForDetailedDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddDocument(string userId, [FromForm] DocumentForAddDto dto)
         {
             var teacher = await _db.TeacherRepository.GetAsync(t => t.UserId == userId, string.Empty);
@@ -129,6 +134,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Users
 
         [Authorize]
         [HttpPatch(ApiV1Routes.Document.UpdateDocumentStatus)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateDocumentStatus(string userId, DocumentForUpdateStatusDto dto)
         {
             var teacher = await _db.TeacherRepository.GetAsync(t => t.UserId == userId, string.Empty);

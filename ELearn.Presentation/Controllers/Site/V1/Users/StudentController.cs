@@ -31,6 +31,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Users
 
         [HttpGet(ApiV1Routes.Student.GetStudent, Name = nameof(GetStudent))]
         [ServiceFilter(typeof(UserCheckIdFilter))]
+        [ProducesResponseType(typeof(UserForStudentDetailedDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetStudent(string id)
         {
             var user = await _db.UserRepository.GetAsync(expression: u => u.Id == id, includeEntity: "Student");

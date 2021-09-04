@@ -29,6 +29,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
         }
 
         [HttpGet(ApiV1Routes.Category.GetCategories)]
+        [ProducesResponseType(typeof(List<CategoryForDetailedDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetCategories()
         {
             var categories = await _db.CategoryRepository.GetAsync(null, o => o.OrderByDescending(c => c.DateCreated), "Parent");
@@ -53,6 +54,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
         }
 
         [HttpGet(ApiV1Routes.Category.GetParentCategories)]
+        [ProducesResponseType(typeof(List<CategoryForDetailedDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetParentCategories()
         {
             var categories = await _db.CategoryRepository.GetAsync(null, o => o.OrderByDescending(c => c.DateCreated), "Parent");
@@ -75,6 +77,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
         }
 
         [HttpGet(ApiV1Routes.Category.GetChildCategories)]
+        [ProducesResponseType(typeof(List<CategoryForDetailedDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetChildCategories()
         {
             var categories = await _db.CategoryRepository.GetAsync(null, o => o.OrderByDescending(c => c.DateCreated), "Parent");
@@ -99,6 +102,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
         }
 
         [HttpGet(ApiV1Routes.Category.GetCategory, Name = nameof(GetCategory))]
+        [ProducesResponseType(typeof(CategoryForDetailedDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetCategory(int id)
         {
             var category = await _db.CategoryRepository.GetAsync(c => c.Id == id, "Parent");
@@ -125,6 +130,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
 
         [Authorize(Policy = "RequireAdminRole")]
         [HttpPost(ApiV1Routes.Category.AddCategory)]
+        [ProducesResponseType(typeof(CategoryForDetailedDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddCategory(CategoryForAddUpdateDto dto)
         {
             var category = await _db.CategoryRepository.GetAsync(c => c.Name == dto.Name, string.Empty);
@@ -169,6 +176,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
 
         [Authorize(Policy = "RequireAdminRole")]
         [HttpPut(ApiV1Routes.Category.UpdateCategory)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateCategory(int id, CategoryForAddUpdateDto dto)
         {
             var category = await _db.CategoryRepository.GetAsync(id);
@@ -213,6 +222,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
 
         [Authorize(Policy = "RequireAdminRole")]
         [HttpDelete(ApiV1Routes.Category.DeleteCategory)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteCategory(int id)
         {
             var category = await _db.CategoryRepository.GetAsync(id);

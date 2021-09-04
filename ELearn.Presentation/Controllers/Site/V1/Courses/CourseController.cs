@@ -45,6 +45,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
         }
 
         [HttpGet(ApiV1Routes.Course.GetCourses)]
+        [ProducesResponseType(typeof(List<CourseForDetailedDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetCourses([FromQuery] PaginationDto pagination)
         {
             var courses = await _db.CourseRepository.GetPagedListAsync(pagination, pagination.Filter.ToCourseExpression(StatusType.Approved), pagination.SortHeader.ToCourseOrderBy(pagination.SortDirection), "Teacher");
@@ -56,6 +57,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
 
         [Authorize]
         [HttpGet(ApiV1Routes.Course.GetCoursesForAdmin)]
+        [ProducesResponseType(typeof(List<CourseForAdminDetailedDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetCoursesForAdmin([FromQuery] PaginationDto pagination, [FromQuery] int? status)
         {
             StatusType statusType = StatusType.All;
@@ -85,6 +87,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
         [Authorize(Policy = "RequireTeacherOrStudentRole")]
         [HttpGet(ApiV1Routes.Course.GetUserCourses)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
+        [ProducesResponseType(typeof(List<CourseForTeacherDetailedDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetUserCourses(string userId)
         {
             if (User.HasClaim(ClaimTypes.Role, "Teacher"))
@@ -113,6 +116,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
         }
 
         [HttpGet(ApiV1Routes.Course.GetCourse, Name = nameof(GetCourse))]
+        [ProducesResponseType(typeof(CourseForSiteDetailedDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetCourse(string id)
         {
             var course = await _db.CourseRepository.GetAsync(c => c.Id == id && c.Status == 1, "Teacher,Sessions,Comments");
@@ -171,6 +176,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
         [HttpPost(ApiV1Routes.Course.AddCourse)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
         [ServiceFilter(typeof(DocumentApproveFilter))]
+        [ProducesResponseType(typeof(CourseForDetailedDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddCourse(string userId, [FromForm] CourseForAddDto dto)
         {
             dto.Title = dto.Title.Trim();
@@ -230,6 +237,9 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
         [HttpPut(ApiV1Routes.Course.UpdateCourse)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
         [ServiceFilter(typeof(DocumentApproveFilter))]
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateCourse(string id, string userId, [FromForm] CourseForUpdateDto dto)
         {
             var course = await _db.CourseRepository.GetAsync(id);
@@ -297,6 +307,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
 
         [Authorize]
         [HttpPatch(ApiV1Routes.Course.UpdateCourseStatus)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateCourseStatus(string id, UpdateStatusDto dto)
         {
             var course = await _db.CourseRepository.GetAsync(id);
@@ -321,6 +333,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
 
         [Authorize]
         [HttpDelete(ApiV1Routes.Course.DeleteCourse)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteCourse(int id)
         {
             var course = await _db.CourseRepository.GetAsync(id);

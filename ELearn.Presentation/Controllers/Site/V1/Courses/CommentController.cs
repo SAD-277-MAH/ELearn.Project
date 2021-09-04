@@ -33,6 +33,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
         }
 
         [HttpGet(ApiV1Routes.Comment.GetComments)]
+        [ProducesResponseType(typeof(List<CommentForDetailedDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetComments(string courseId)
         {
             var comments = await _db.CommentRepository.GetAsync(c => c.CourseId == courseId && c.Status == 1, o => o.OrderByDescending(c => c.DateCreated), "User");
@@ -42,6 +43,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
 
         [Authorize]
         [HttpGet(ApiV1Routes.Comment.GetCommentsForAdmin)]
+        [ProducesResponseType(typeof(List<CommentForAdminDetailedDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetCommentsForAdmin([FromQuery] PaginationDto pagination, [FromQuery] int? status)
         {
             StatusType statusType = StatusType.All;
@@ -70,6 +72,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
         [Authorize]
         [HttpPost(ApiV1Routes.Comment.AddComment)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
+        [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddComment(string courseId, string userId, CommentForAddDto dto)
         {
             var course = await _db.CourseRepository.GetAsync(c => c.Id == courseId && c.Status == 1, string.Empty);
@@ -94,6 +98,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
 
         [Authorize]
         [HttpPatch(ApiV1Routes.Comment.UpdateCommentStatus)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateCommentStatus(string id, UpdateStatusDto dto)
         {
             var comment = await _db.CommentRepository.GetAsync(id);

@@ -41,6 +41,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Sessions
         [Authorize(Policy = "RequireTeacherOrStudentRole")]
         [HttpGet(ApiV1Routes.Session.GetSessions)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
+        [ProducesResponseType(typeof(List<SessionForDetailedDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetSessions(string courseId, string userId)
         {
             if (User.HasClaim(ClaimTypes.Role, "Student") && !(await _orderService.IsUserInCourseAsync(userId, courseId)))
@@ -64,6 +66,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Sessions
         [Authorize(Policy = "RequireTeacherOrStudentRole")]
         [HttpGet(ApiV1Routes.Session.GetSession, Name = nameof(GetSession))]
         [ServiceFilter(typeof(UserCheckIdFilter))]
+        [ProducesResponseType(typeof(SessionForDetailedDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetSession(string id, string courseId, string userId)
         {
             if (User.HasClaim(ClaimTypes.Role, "Student") && !(await _orderService.IsUserInCourseAsync(userId, courseId)))
@@ -95,6 +99,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Sessions
         [HttpPost(ApiV1Routes.Session.AddSession)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
         [ServiceFilter(typeof(DocumentApproveFilter))]
+        [ProducesResponseType(typeof(SessionForDetailedDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddSession(string courseId, string userId, [FromForm] SessionForAddDto dto)
         {
             dto.Title = dto.Title.Trim();
@@ -147,6 +153,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Sessions
         [HttpPut(ApiV1Routes.Session.UpdateSession)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
         [ServiceFilter(typeof(DocumentApproveFilter))]
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateSession(string id, string courseId, string userId, [FromForm] SessionForUpdateDto dto)
         {
             var session = await _db.SessionRepository.GetAsync(s => s.Id == id && s.CourseId == courseId && s.Course.TeacherId == userId, "Course");
@@ -202,6 +210,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Sessions
         [HttpDelete(ApiV1Routes.Session.DeleteSession)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
         [ServiceFilter(typeof(DocumentApproveFilter))]
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteSession(string id, string courseId, string userId)
         {
             var session = await _db.SessionRepository.GetAsync(s => s.Id == id && s.CourseId == courseId && s.Course.TeacherId == userId, "Course");

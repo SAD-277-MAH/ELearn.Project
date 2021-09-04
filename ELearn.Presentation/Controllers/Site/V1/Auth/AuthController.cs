@@ -45,6 +45,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
         }
 
         [HttpPost(ApiV1Routes.Auth.RegisterStudent)]
+        [ProducesResponseType(typeof(UserForStudentDetailedDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ErrorList), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RegisterStudent(UserForRegisterStudentDto dto)
         {
             var user = _mapper.Map<User>(dto);
@@ -87,11 +89,15 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
             }
             else
             {
-                return BadRequest("خطا در ثبت نام");
+                var returnMessage = new ErrorList();
+                returnMessage.Errors.Add("خطا در ثبت نام");
+                return BadRequest(returnMessage);
             }
         }
 
         [HttpPost(ApiV1Routes.Auth.RegisterTeacher)]
+        [ProducesResponseType(typeof(UserForTeacherDetailedDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ErrorList), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RegisterTeacher(UserForRegisterTeacherDto dto)
         {
             var user = _mapper.Map<User>(dto);
@@ -159,11 +165,16 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
             }
             else
             {
-                return BadRequest("خطا در ثبت نام");
+                var returnMessage = new ErrorList();
+                returnMessage.Errors.Add("خطا در ثبت نام");
+                return BadRequest(returnMessage);
             }
         }
 
         [HttpPost(ApiV1Routes.Auth.Login)]
+        [ProducesResponseType(typeof(TokenForLoginResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Login(TokenForRequestDto tokenForRequestDto)
         {
             switch (tokenForRequestDto.GrantType)
@@ -212,7 +223,18 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
                     var res = await _utilities.RefreshAccessTokenAsync(tokenForRequestDto);
                     if (res.Status)
                     {
-                        return Ok(res);
+                        var user = _mapper.Map<UserForDetailedDto>(res.User);
+
+                        var authUser = await _userManager.FindByNameAsync(tokenForRequestDto.UserName);
+                        var roles = await _userManager.GetRolesAsync(authUser);
+
+                        return Ok(new TokenForLoginResponseDto()
+                        {
+                            Token = res.Token,
+                            RefreshToken = res.RefreshToken,
+                            Roles = roles,
+                            User = user
+                        });
                     }
                     else
                     {
@@ -224,6 +246,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
         }
 
         [HttpGet(ApiV1Routes.Auth.ResendActivationEmail)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ResendActivationEmail([FromQuery] string UserName)
         {
             var user = await _userManager.FindByNameAsync(UserName);
@@ -259,6 +283,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
         }
 
         [HttpGet(ApiV1Routes.Auth.ResendActivationPhoneNumber)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ResendActivationPhoneNumber([FromQuery] string UserName)
         {
             var user = await _userManager.FindByNameAsync(UserName);
@@ -289,6 +315,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
         }
 
         [HttpGet(ApiV1Routes.Auth.ActivateEmail)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ActivateEmail([FromQuery] string UserName, [FromQuery] string Token)
         {
             if (string.IsNullOrEmpty(UserName) || string.IsNullOrEmpty(Token))
@@ -316,6 +343,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
         }
 
         [HttpGet(ApiV1Routes.Auth.ActivatePhoneNumber)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ActivatePhoneNumber([FromQuery] string UserName, [FromQuery] string Token)
         {
             if (string.IsNullOrEmpty(UserName) || string.IsNullOrEmpty(Token))
@@ -343,6 +372,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
         }
 
         [HttpGet(ApiV1Routes.Auth.ForgetPassword)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ForgetPassword([FromQuery] string UserName)
         {
             var user = await _userManager.FindByNameAsync(UserName);
@@ -361,6 +392,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
         }
 
         [HttpPost(ApiV1Routes.Auth.ResetPassword)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ResetPassword(UserForResetPasswordDto dto)
         {
             var user = await _userManager.FindByNameAsync(dto.UserName);

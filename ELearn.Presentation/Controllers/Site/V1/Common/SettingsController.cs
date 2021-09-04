@@ -29,6 +29,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Common
 
         [Authorize(Policy = "RequireAdminRole")]
         [HttpGet(ApiV1Routes.Setting.GetSiteSetting)]
+        [ProducesResponseType(typeof(SettingForSiteDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSiteSetting()
         {
             var setting = (await _db.SettingRepository.GetAsync()).LastOrDefault();
@@ -47,6 +48,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Common
 
         [Authorize(Policy = "RequireAdminRole")]
         [HttpGet(ApiV1Routes.Setting.GetMessageSenderSetting)]
+        [ProducesResponseType(typeof(SettingForMessageSenderDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetMessageSenderSetting()
         {
             var setting = (await _db.SettingRepository.GetAsync()).LastOrDefault();
@@ -65,6 +67,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Common
 
         [Authorize(Policy = "RequireAdminRole")]
         [HttpPut(ApiV1Routes.Setting.UpdateSiteSetting)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateSiteSetting(SettingForSiteDto dto)
         {
             var setting = (await _db.SettingRepository.GetAsync()).LastOrDefault();
@@ -92,6 +96,8 @@ namespace ELearn.Presentation.Controllers.Site.V1.Common
 
         [Authorize(Policy = "RequireAdminRole")]
         [HttpPut(ApiV1Routes.Setting.UpdateMessageSenderSetting)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateMessageSenderSetting(SettingForMessageSenderDto dto)
         {
             var setting = (await _db.SettingRepository.GetAsync()).LastOrDefault();
