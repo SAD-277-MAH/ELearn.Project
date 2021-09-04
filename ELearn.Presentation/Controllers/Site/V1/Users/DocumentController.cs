@@ -119,7 +119,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Users
                 if (await _db.SaveAsync())
                 {
                     var resultDocument = _mapper.Map<DocumentForDetailedDto>(newDocument);
-                    return CreatedAtRoute(nameof(GetDocument), new { id = newDocument.Id }, resultDocument);
+                    return CreatedAtRoute(nameof(GetDocument), new { id = newDocument.Id, userId = userId }, resultDocument);
                 }
                 else
                 {
