@@ -10,6 +10,7 @@ namespace ELearn.Data.Models
     {
         public Document()
         {
+            Id = Guid.NewGuid().ToString();
             DateCreated = DateTime.Now;
             DateModified = DateTime.Now;
         }

@@ -315,6 +315,10 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
             if (course != null)
             {
                 course.Status = dto.Status;
+                if (dto.Status == 1)
+                {
+                    course.VerifiedAt = DateTime.Now;
+                }
                 _db.CourseRepository.Update(course);
                 if (await _db.SaveAsync())
                 {
