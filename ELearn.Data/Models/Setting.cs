@@ -48,6 +48,6 @@ namespace ELearn.Data.Models
         public int EmailPort { get; set; }
 
         [Display(Name = "Email EnableSsl")]
-        public int EmailEnableSsl { get; set; }
+        public bool EmailEnableSsl { get; set; }
     }
 }

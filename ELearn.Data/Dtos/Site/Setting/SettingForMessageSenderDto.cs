@@ -30,6 +30,6 @@ namespace ELearn.Data.Dtos.Site.Setting
         public int EmailPort { get; set; }
 
         [Display(Name = "Email EnableSsl")]
-        public int EmailEnableSsl { get; set; }
+        public bool EmailEnableSsl { get; set; }
     }
 }

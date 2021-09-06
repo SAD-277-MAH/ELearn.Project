@@ -38,7 +38,7 @@ namespace ELearn.Services.Site.Service
 
                 client.Port = setting.EmailPort;
                 client.Credentials = new NetworkCredential(setting.EmailAddress, setting.EmailPassword);
-                client.EnableSsl = true;
+                client.EnableSsl = setting.EmailEnableSsl;
 
                 client.Send(message);
             }
