@@ -4,6 +4,7 @@ using ELearn.Data.Dtos.Site.Comment;
 using ELearn.Data.Dtos.Site.Course;
 using ELearn.Data.Dtos.Site.Document;
 using ELearn.Data.Dtos.Site.Order;
+using ELearn.Data.Dtos.Site.Setting;
 using ELearn.Data.Dtos.Site.Users;
 using ELearn.Data.Models;
 using System;
@@ -205,6 +206,11 @@ namespace ELearn.Common.Utilities
                 {
                     opt.MapFrom(src => src.Teacher.Status);
                 });
+
+            CreateMap<Setting, SettingForSiteDto>();
+            CreateMap<SettingForSiteDto, Setting>();
+            CreateMap<Setting, SettingForMessageSenderDto>();
+            CreateMap<SettingForMessageSenderDto, Setting>();
         }
     }
 }
