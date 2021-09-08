@@ -1,7 +1,7 @@
 ﻿using ELearn.Data.Context;
 using ELearn.Repo.Infrastructure;
 using ELearn.Services.Site.Interface;
-using Kavenegar;
+using SmsIrRestfulNetCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,14 +53,31 @@ namespace ELearn.Services.Site.Service
             {
                 var setting = _db.SettingRepository.Get().LastOrDefault();
 
-                var sender = setting.SmsSender;
-                var receptor = To;
-                var message = Body;
-                var api = new KavenegarApi(setting.SmsApi);
-                api.Send(sender, receptor, message);
+                var token = new Token().GetToken(setting.SmsAPIKey, setting.SmsSecurityKey);
+
+                var messageSendObject = new MessageSendObject()
+                {
+                    Messages = new List<string> { Body }.ToArray(),
+                    MobileNumbers = new List<string> { To }.ToArray(),
+                    LineNumber = setting.SmsSender,
+                    SendDateTime = null,
+                    CanContinueInCaseOfError = false
+                };
+
+                MessageSendResponseObject messageSendResponseObject = new MessageSend().Send(token, messageSendObject);
+
+                //if (messageSendResponseObject.IsSuccessful)
+                //{
+                //    return true;
+                //}
+                //else
+                //{
+                //    return false;
+                //}
             }
             catch
             {
+                //return false;
             }
         }
     }

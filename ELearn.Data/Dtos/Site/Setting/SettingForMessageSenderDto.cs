@@ -7,8 +7,11 @@ namespace ELearn.Data.Dtos.Site.Setting
 {
     public class SettingForMessageSenderDto
     {
-        [Display(Name = "API")]
-        public string SmsApi { get; set; }
+        [Display(Name = "SMS APIKey")]
+        public string SmsAPIKey { get; set; }
+
+        [Display(Name = "SMS SecurityKey")]
+        public string SmsSecurityKey { get; set; }
 
         [Display(Name = "شماره فرستنده")]
         [MaxLength(15, ErrorMessage = "مقدار {0} نباید بیش تر از {1} کاراکتر باشد")]

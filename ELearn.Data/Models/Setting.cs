@@ -25,11 +25,14 @@ namespace ELearn.Data.Models
         [DataType(DataType.MultilineText)]
         public string SiteKeyWords { get; set; }
 
-        [Display(Name = "SMS API")]
-        public string SmsApi { get; set; }
+        [Display(Name = "SMS APIKey")]
+        public string SmsAPIKey { get; set; }
+
+        [Display(Name = "SMS SecurityKey")]
+        public string SmsSecurityKey { get; set; }
 
         [Display(Name = "شماره فرستنده")]
-        [MaxLength(15, ErrorMessage = "مقدار {0} نباید بیش تر از {1} کاراکتر باشد")]
+        [MaxLength(20, ErrorMessage = "مقدار {0} نباید بیش تر از {1} کاراکتر باشد")]
         public string SmsSender { get; set; }
 
         [Display(Name = "ایمیل فرستنده")]
