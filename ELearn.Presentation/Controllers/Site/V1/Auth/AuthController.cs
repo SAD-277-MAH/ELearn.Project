@@ -245,7 +245,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
             }
         }
 
-        [HttpGet(ApiV1Routes.Auth.ResendActivationEmail)]
+        [HttpPost(ApiV1Routes.Auth.ResendActivationEmail)]
         [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ResendActivationEmail([FromQuery] string UserName)
@@ -282,7 +282,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
             }
         }
 
-        [HttpGet(ApiV1Routes.Auth.ResendActivationPhoneNumber)]
+        [HttpPost(ApiV1Routes.Auth.ResendActivationPhoneNumber)]
         [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ResendActivationPhoneNumber([FromQuery] string UserName)
@@ -342,7 +342,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
             }
         }
 
-        [HttpGet(ApiV1Routes.Auth.ActivatePhoneNumber)]
+        [HttpPost(ApiV1Routes.Auth.ActivatePhoneNumber)]
         [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ActivatePhoneNumber([FromQuery] string UserName, [FromQuery] string Token)
@@ -371,7 +371,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
             }
         }
 
-        [HttpGet(ApiV1Routes.Auth.ForgetPassword)]
+        [HttpPost(ApiV1Routes.Auth.ForgetPassword)]
         [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> ForgetPassword([FromQuery] string UserName)

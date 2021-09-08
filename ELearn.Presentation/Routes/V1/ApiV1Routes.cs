@@ -35,11 +35,11 @@ namespace ELearn.Presentation.Routes.V1
             public const string Login = BasePanel + "/auth/login";
 
             // /api/v1/panel/auth/activationcode/email
-            // GET
+            // POST
             public const string ResendActivationEmail = BasePanel + "/auth/activationcode/email";
 
             // /api/v1/panel/auth/activationcode/phonenumber
-            // GET
+            // POST
             public const string ResendActivationPhoneNumber = BasePanel + "/auth/activationcode/phonenumber";
 
             // /api/v1/panel/auth/activate/email
@@ -47,11 +47,11 @@ namespace ELearn.Presentation.Routes.V1
             public const string ActivateEmail = BasePanel + "/auth/activate/email";
 
             // /api/v1/panel/auth/activate/phonenumber
-            // GET
+            // POST
             public const string ActivatePhoneNumber = BasePanel + "/auth/activate/phonenumber";
 
             // /api/v1/panel/auth/forgetpassword
-            // GET
+            // POST
             public const string ForgetPassword = BasePanel + "/auth/forgetpassword";
 
             // /api/v1/panel/auth/resetpassword
