@@ -175,12 +175,12 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
         [ProducesResponseType(typeof(TokenForLoginResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Login(TokenForRequestDto tokenForRequestDto)
+        public async Task<IActionResult> Login(TokenForRequestDto dto)
         {
-            switch (tokenForRequestDto.GrantType)
+            switch (dto.GrantType)
             {
                 case "password":
-                    var result = await _utilities.GenerateNewTokenAsync(tokenForRequestDto);
+                    var result = await _utilities.GenerateNewTokenAsync(dto);
                     if (result.Status)
                     {
                         if (await _userManager.IsInRoleAsync(result.User, "Teacher"))
@@ -204,7 +204,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
 
                         var user = _mapper.Map<UserForDetailedDto>(result.User);
 
-                        var authUser = await _userManager.FindByNameAsync(tokenForRequestDto.UserName);
+                        var authUser = await _userManager.FindByNameAsync(dto.UserName);
                         var roles = await _userManager.GetRolesAsync(authUser);
 
                         return Ok(new TokenForLoginResponseDto()
@@ -220,12 +220,12 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
                         return Unauthorized("خطا در ورود");
                     }
                 case "refresh_token":
-                    var res = await _utilities.RefreshAccessTokenAsync(tokenForRequestDto);
+                    var res = await _utilities.RefreshAccessTokenAsync(dto);
                     if (res.Status)
                     {
                         var user = _mapper.Map<UserForDetailedDto>(res.User);
 
-                        var authUser = await _userManager.FindByNameAsync(tokenForRequestDto.UserName);
+                        var authUser = await _userManager.FindByNameAsync(dto.UserName);
                         var roles = await _userManager.GetRolesAsync(authUser);
 
                         return Ok(new TokenForLoginResponseDto()
@@ -248,9 +248,9 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
         [HttpPost(ApiV1Routes.Auth.ResendActivationEmail)]
         [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> ResendActivationEmail([FromQuery] string UserName)
+        public async Task<IActionResult> ResendActivationEmail(UserForGetUserNameDto dto)
         {
-            var user = await _userManager.FindByNameAsync(UserName);
+            var user = await _userManager.FindByNameAsync(dto.UserName);
 
             if (user == null)
             {
@@ -285,9 +285,9 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
         [HttpPost(ApiV1Routes.Auth.ResendActivationPhoneNumber)]
         [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> ResendActivationPhoneNumber([FromQuery] string UserName)
+        public async Task<IActionResult> ResendActivationPhoneNumber(UserForGetUserNameDto dto)
         {
-            var user = await _userManager.FindByNameAsync(UserName);
+            var user = await _userManager.FindByNameAsync(dto.UserName);
 
             if (user == null)
             {
@@ -345,17 +345,17 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
         [HttpPost(ApiV1Routes.Auth.ActivatePhoneNumber)]
         [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> ActivatePhoneNumber([FromQuery] string UserName, [FromQuery] string Token)
+        public async Task<IActionResult> ActivatePhoneNumber(UserForActivatePhoneNumberDto dto)
         {
-            if (string.IsNullOrEmpty(UserName) || string.IsNullOrEmpty(Token))
+            if (string.IsNullOrEmpty(dto.UserName) || string.IsNullOrEmpty(dto.Token))
             {
                 return BadRequest("اطلاعات اشتباه است");
             }
 
-            var user = await _userManager.FindByNameAsync(UserName);
+            var user = await _userManager.FindByNameAsync(dto.UserName);
             if (user != null)
             {
-                var result = await _userManager.ChangePhoneNumberAsync(user, UserName, Token);
+                var result = await _userManager.ChangePhoneNumberAsync(user, dto.UserName, dto.Token);
                 if (result.Succeeded)
                 {
                     return Ok();
@@ -374,9 +374,9 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
         [HttpPost(ApiV1Routes.Auth.ForgetPassword)]
         [ProducesResponseType(typeof(void), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> ForgetPassword([FromQuery] string UserName)
+        public async Task<IActionResult> ForgetPassword(UserForGetUserNameDto dto)
         {
-            var user = await _userManager.FindByNameAsync(UserName);
+            var user = await _userManager.FindByNameAsync(dto.UserName);
 
             if (user == null)
             {
