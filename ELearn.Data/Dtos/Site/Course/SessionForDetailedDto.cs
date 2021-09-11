@@ -7,6 +7,8 @@ namespace ELearn.Data.Dtos.Site.Course
 {
     public class SessionForDetailedDto
     {
+        public string Id { get; set; }
+
         [Display(Name = "عنوان جلسه")]
         [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
         [MaxLength(50, ErrorMessage = "مقدار {0} نمی تواند بیشتر از {1} باشد")]
