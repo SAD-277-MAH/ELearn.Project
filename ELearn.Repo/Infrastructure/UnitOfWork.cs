@@ -201,6 +201,32 @@ namespace ELearn.Repo.Infrastructure
                 return documentRepository;
             }
         }
+
+        private IExamRepository examRepository;
+        public IExamRepository ExamRepository
+        {
+            get
+            {
+                if (examRepository == null)
+                {
+                    examRepository = new ExamRepository(_db);
+                }
+                return examRepository;
+            }
+        }
+
+        private IExamQuestionRepository examQuestionRepository;
+        public IExamQuestionRepository ExamQuestionRepository
+        {
+            get
+            {
+                if (examQuestionRepository == null)
+                {
+                    examQuestionRepository = new ExamQuestionRepository(_db);
+                }
+                return examQuestionRepository;
+            }
+        }
         #endregion
 
         #region Save

@@ -268,5 +268,55 @@ namespace ELearn.Presentation.Routes.V1
             public const string UpdateDocumentStatus = BasePanel + "/{userId}/documents/status";
         }
         #endregion
+
+        #region ExamRoutes
+        public static class Exam
+        {
+            // /api/v1/site/{userId}/exams/{courseId}
+            // GET
+            public const string GetExams = BaseSite + "/{userId}/exams/{courseId}";
+
+            // /api/v1/site/{userId}/exams/{id}
+            // GET
+            public const string GetExam = BaseSite + "/{userId}/exams/{id}";
+
+            // /api/v1/site/{userId}/exams
+            // POST
+            public const string AddExam = BaseSite + "/{userId}/exams";
+
+            // /api/v1/site/{userId}/exams/{id}
+            // PUT
+            public const string UpdateExam = BaseSite + "/{userId}/exams/{id}";
+
+            // /api/v1/site/{userId}/exams/{id}
+            // DELETE
+            public const string DeleteExam = BaseSite + "/{userId}/exams/{id}";
+        }
+        #endregion
+
+        #region ExamQuestionRoutes
+        public static class ExamQuestion
+        {
+            // /api/v1/site/{userId}/exams/{examId}/examquestions
+            // GET
+            public const string GetExamQuestions = BaseSite + "/{userId}/exams/{examId}/examquestions";
+
+            // /api/v1/site/{userId}/exams/{examId}/examquestions/{id}
+            // GET
+            public const string GetExamQuestion = BaseSite + "/{userId}/exams/{examId}/examquestions/{id}";
+
+            // /api/v1/site/{userId}/exams/{examId}/examquestions
+            // POST
+            public const string AddExamQuestion = BaseSite + "/{userId}/exams/{examId}/examquestions";
+
+            // /api/v1/site/{userId}/exams/{examId}/examquestions/{id}
+            // PUT
+            public const string UpdateExamQuestion = BaseSite + "/{userId}/exams/{examId}/examquestions/{id}";
+
+            // /api/v1/site/{userId}/exams/{examId}/examquestions/{id}
+            // DELETE
+            public const string DeleteExamQuestion = BaseSite + "/{userId}/exams/{examId}/examquestions/{id}";
+        }
+        #endregion
     }
 }

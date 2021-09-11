@@ -339,7 +339,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
         [HttpDelete(ApiV1Routes.Course.DeleteCourse)]
         [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeleteCourse(int id)
+        public async Task<IActionResult> DeleteCourse(string id)
         {
             var course = await _db.CourseRepository.GetAsync(id);
 

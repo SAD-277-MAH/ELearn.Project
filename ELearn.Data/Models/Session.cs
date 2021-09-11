@@ -44,5 +44,7 @@ namespace ELearn.Data.Models
 
         [ForeignKey("CourseId")]
         public virtual Course Course { get; set; }
+
+        public virtual Exam Exam { get; set; }
     }
 }
