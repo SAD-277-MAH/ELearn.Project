@@ -3,6 +3,8 @@ using ELearn.Common.Extentions;
 using ELearn.Data.Dtos.Site.Comment;
 using ELearn.Data.Dtos.Site.Course;
 using ELearn.Data.Dtos.Site.Document;
+using ELearn.Data.Dtos.Site.Exam;
+using ELearn.Data.Dtos.Site.ExamQuestion;
 using ELearn.Data.Dtos.Site.Order;
 using ELearn.Data.Dtos.Site.Setting;
 using ELearn.Data.Dtos.Site.Users;
@@ -211,6 +213,14 @@ namespace ELearn.Common.Utilities
             CreateMap<SettingForSiteDto, Setting>();
             CreateMap<Setting, SettingForMessageSenderDto>();
             CreateMap<SettingForMessageSenderDto, Setting>();
+
+            CreateMap<ExamForAddDto, Exam>();
+            CreateMap<ExamForUpdateDto, Exam>();
+            CreateMap<Exam, ExamForDetailedDto>();
+
+            CreateMap<ExamQuestionForAddDto, ExamQuestion>();
+            CreateMap<ExamQuestionForUpdateDto, ExamQuestion>();
+            CreateMap<ExamQuestion, ExamQuestionForDetailedDto>();
         }
     }
 }
