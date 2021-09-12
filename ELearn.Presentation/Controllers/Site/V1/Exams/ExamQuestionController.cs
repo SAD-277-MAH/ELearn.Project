@@ -113,18 +113,25 @@ namespace ELearn.Presentation.Controllers.Site.V1.Exams
                 return Unauthorized("دسترسی غیر مجاز");
             }
 
-            var uploadResult = await _uploadService.UploadFile(dto.File, string.Format("{0}://{1}{2}", Request.Scheme, Request.Host.Value, Request.PathBase.Value), "files\\Exams" + examId);
-            if (!uploadResult.Status)
-            {
-                return BadRequest("خطا در آپلود فایل");
-            }
-
             dto.Title = dto.Title.Trim();
             var newExamQuestion = new ExamQuestion()
             {
                 ExamId = examId,
-                FileUrl = uploadResult.Url
             };
+
+            if (dto.File != null)
+            {
+                var uploadResult = await _uploadService.UploadFile(dto.File, string.Format("{0}://{1}{2}", Request.Scheme, Request.Host.Value, Request.PathBase.Value), "files\\Exams" + examId);
+
+                if (uploadResult.Status)
+                {
+                    newExamQuestion.FileUrl = uploadResult.Url;
+                }
+                else
+                {
+                    return BadRequest("خطا در آپلود فایل");
+                }
+            }
 
             _mapper.Map(dto, newExamQuestion);
 

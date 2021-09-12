@@ -41,7 +41,6 @@ namespace ELearn.Data.Dtos.Site.ExamQuestion
         [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
         public short CorrectAnswer { get; set; }
 
-        [Required]
         public IFormFile File { get; set; }
     }
 }

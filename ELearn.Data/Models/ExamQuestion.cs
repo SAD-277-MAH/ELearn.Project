@@ -25,7 +25,6 @@ namespace ELearn.Data.Models
         public string Description { get; set; }
 
         [Display(Name = "فابل پیوست سوال")]
-        [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
         [MaxLength(1000, ErrorMessage = "مقدار {0} نمی تواند بیشتر از {1} باشد")]
         public string FileUrl { get; set; }
 
