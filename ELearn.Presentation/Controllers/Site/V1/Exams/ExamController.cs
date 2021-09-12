@@ -89,6 +89,12 @@ namespace ELearn.Presentation.Controllers.Site.V1.Exams
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddExam(string userId, ExamForAddDto dto)
         {
+            var exam = await _db.ExamRepository.GetAsync(e => e.SessionId == dto.SessionId, string.Empty);
+            if (exam != null)
+            {
+                return BadRequest("برای این جلسه قبلا آزمون ثبت شده است");
+            }
+
             var session = await _db.SessionRepository.GetAsync(s => s.Id == dto.SessionId, "Course");
             if (session.Course.TeacherId != userId)
             {
@@ -134,6 +140,48 @@ namespace ELearn.Presentation.Controllers.Site.V1.Exams
 
             dto.Title = dto.Title.Trim();
             _mapper.Map(dto, exam);
+            exam.DateModified = DateTime.Now;
+
+            _db.ExamRepository.Update(exam);
+
+            if (await _db.SaveAsync())
+            {
+                return NoContent();
+            }
+            else
+            {
+                return BadRequest("خطا در ثبت تغییرات");
+            }
+        }
+
+        [Authorize(Policy = "RequireTeacherRole")]
+        [HttpPut(ApiV1Routes.Exam.UpdatePassingGrade)]
+        [ServiceFilter(typeof(UserCheckIdFilter))]
+        [ServiceFilter(typeof(DocumentApproveFilter))]
+        [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdatePassingGrade(string userId, string id, ExamForUpdatePassingGradeDto dto)
+        {
+            var exam = await _db.ExamRepository.GetAsync(id);
+            if (exam == null)
+            {
+                return BadRequest("آزمون یافت نشد");
+            }
+
+            var session = await _db.SessionRepository.GetAsync(s => s.Id == exam.SessionId, "Course");
+            if (session.Course.TeacherId != userId)
+            {
+                return Unauthorized("دسترسی غیر مجاز");
+            }
+
+            int examQuestionCount = (await _db.ExamQuestionRepository.GetAsync(e => e.ExamId == id, null, string.Empty)).Count();
+            if (dto.PassingGrade > examQuestionCount)
+            {
+                return BadRequest("نمره قبولی باید کمتر از تعداد سوالات باشد");
+            }
+
+            exam.PassingGrade = dto.PassingGrade;
             exam.DateModified = DateTime.Now;
 
             _db.ExamRepository.Update(exam);

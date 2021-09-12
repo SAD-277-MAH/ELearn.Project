@@ -13,6 +13,8 @@ namespace ELearn.Data.Dtos.Site.Exam
 
         public string Description { get; set; }
 
+        public int PassingGrade { get; set; }
+
         public string SessionId { get; set; }
 
 

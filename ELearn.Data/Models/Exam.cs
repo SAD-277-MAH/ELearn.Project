@@ -24,6 +24,9 @@ namespace ELearn.Data.Models
         [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
         public string Description { get; set; }
 
+        [Display(Name = "نمره قبولی")]
+        public int PassingGrade { get; set; }
+
         [Required]
         public string SessionId { get; set; }
 

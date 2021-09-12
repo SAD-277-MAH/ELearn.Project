@@ -288,6 +288,10 @@ namespace ELearn.Presentation.Routes.V1
             // PUT
             public const string UpdateExam = BaseSite + "/{userId}/exams/{id}";
 
+            // /api/v1/site/{userId}/exams/{id}/setgrade
+            // PATCH
+            public const string UpdatePassingGrade = BaseSite + "/{userId}/exams/{id}/setgrade";
+
             // /api/v1/site/{userId}/exams/{id}
             // DELETE
             public const string DeleteExam = BaseSite + "/{userId}/exams/{id}";
