@@ -155,7 +155,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Exams
         }
 
         [Authorize(Policy = "RequireTeacherRole")]
-        [HttpPut(ApiV1Routes.Exam.UpdatePassingGrade)]
+        [HttpPatch(ApiV1Routes.Exam.UpdatePassingGrade)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
         [ServiceFilter(typeof(DocumentApproveFilter))]
         [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
