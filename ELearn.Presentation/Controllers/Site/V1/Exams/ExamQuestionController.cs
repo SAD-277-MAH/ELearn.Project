@@ -221,6 +221,12 @@ namespace ELearn.Presentation.Controllers.Site.V1.Exams
                 return Unauthorized("دسترسی غیر مجاز");
             }
 
+            int examQuestionCount = (await _db.ExamQuestionRepository.GetAsync(e => e.ExamId == examQuestion.Exam.Id, null, string.Empty)).Count();
+            if (examQuestion.Exam.PassingGrade > (examQuestionCount - 1))
+            {
+                return BadRequest("نمره قبولی پس از حذف سوال آزمون باید کمتر از تعداد سوالات باشد");
+            }
+
             _uploadService.RemoveFileFromLocal(_utilities.FindLocalPathFromUrl(examQuestion.FileUrl));
 
             _db.ExamQuestionRepository.Delete(examQuestion);
