@@ -9,6 +9,7 @@ using ELearn.Data.Dtos.Site.Order;
 using ELearn.Data.Dtos.Site.Setting;
 using ELearn.Data.Dtos.Site.Users;
 using ELearn.Data.Models;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,8 +19,12 @@ namespace ELearn.Common.Utilities
 {
     public class AutoMapperProfile : Profile
     {
-        public AutoMapperProfile()
+        private readonly IHttpContextAccessor _context;
+
+        public AutoMapperProfile(IHttpContextAccessor context)
         {
+            _context = context;
+
             CreateMap<UserForRegisterStudentDto, User>()
                 .ForMember(dest => dest.PhoneNumber, opt =>
                 {
@@ -142,6 +147,14 @@ namespace ELearn.Common.Utilities
                 .ForMember(dest => dest.Time, opt =>
                 {
                     opt.MapFrom(src => src.Time.ToString(@"hh\:mm"));
+                })
+                .ForMember(dest => dest.VideoUrl, opt =>
+                {
+                    opt.MapFrom(src => $"{_context.HttpContext.Request.Scheme}://{_context.HttpContext.Request.Host.Value}{_context.HttpContext.Request.PathBase.Value}/StreamFile/{src.Id}");
+                })
+                .ForMember(dest => dest.FileUrl, opt =>
+                {
+                    opt.MapFrom(src => $"{_context.HttpContext.Request.Scheme}://{_context.HttpContext.Request.Host.Value}{_context.HttpContext.Request.PathBase.Value}/DownloadFile/{src.Id}");
                 });
 
             CreateMap<Order, OrderForDetailedDto>();

@@ -27,6 +27,10 @@ namespace ELearn.Data.Dtos.Site.Course
         [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
         public string VideoUrl { get; set; }
 
+        [Display(Name = "فایل جلسه")]
+        [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
+        public string FileUrl { get; set; }
+
         [Display(Name = "زمان جلسه")]
         [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
         public string Time { get; set; }

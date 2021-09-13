@@ -7,6 +7,7 @@ using ELearn.Common.Helpers.Service;
 using ELearn.Common.Utilities;
 using ELearn.Data.Context;
 using ELearn.Data.Models;
+using ELearn.Presentation.Middlewares;
 using ELearn.Repo.Infrastructure;
 using ELearn.Services.Seed.Service;
 using ELearn.Services.Site.Interface;
@@ -109,12 +110,19 @@ namespace ELearn.Presentation
                 option.AddPolicy("Access", policy => policy.RequireRole("System", "Admin", "Teacher", "Student"));
             });
 
-            var mapperConfig = new MapperConfiguration(options =>
+            //var mapperConfig = new MapperConfiguration(options =>
+            //{
+            //    options.AddProfile(new AutoMapperProfile());
+            //});
+            //IMapper mapper = mapperConfig.CreateMapper();
+            //services.AddSingleton(mapper);
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddSingleton(provider => new MapperConfiguration(options =>
             {
-                options.AddProfile(new AutoMapperProfile());
-            });
-            IMapper mapper = mapperConfig.CreateMapper();
-            services.AddSingleton(mapper);
+                options.AddProfile(new AutoMapperProfile(provider.GetService<IHttpContextAccessor>()));
+            }).CreateMapper());
 
 
             services.AddMvc(option =>
@@ -174,7 +182,6 @@ namespace ELearn.Presentation
                 document.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
             });
 
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IUnitOfWork<DatabaseContext>, UnitOfWork<DatabaseContext>>();
             services.AddTransient<SeedService>();
             services.AddScoped<IUtilities, Utilities>();
@@ -231,6 +238,8 @@ namespace ELearn.Presentation
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseProtectFileActions();
 
             app.UseAuthentication();
             app.UseAuthorization();
