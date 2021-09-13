@@ -283,9 +283,14 @@ namespace ELearn.Presentation.Routes.V1
             // /api/v1/site/{userId}/exams/sessions/{sessionId}
             // GET
             public const string GetExamForSession = BaseSite + "/{userId}/exams/sessions/{sessionId}";
+
             // /api/v1/site/{userId}/exams
             // POST
             public const string AddExam = BaseSite + "/{userId}/exams";
+
+            // /api/v1/site/{userId}/exams/{id}/takeexam
+            // POST
+            public const string TakeExam = BaseSite + "/{userId}/exams/{id}/takeexam";
 
             // /api/v1/site/{userId}/exams/{id}
             // PUT

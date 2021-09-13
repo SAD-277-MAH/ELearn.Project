@@ -36,5 +36,7 @@ namespace ELearn.Data.Models
 
 
         public virtual ICollection<ExamQuestion> ExamQuestions { get; set; }
+
+        public virtual ICollection<ExamAnswer> ExamAnswers { get; set; }
     }
 }

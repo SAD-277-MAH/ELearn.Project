@@ -227,6 +227,19 @@ namespace ELearn.Repo.Infrastructure
                 return examQuestionRepository;
             }
         }
+
+        private IExamAnswerRepository examAnswerRepository;
+        public IExamAnswerRepository ExamAnswerRepository
+        {
+            get
+            {
+                if (examAnswerRepository == null)
+                {
+                    examAnswerRepository = new ExamAnswerRepository(_db);
+                }
+                return examAnswerRepository;
+            }
+        }
         #endregion
 
         #region Save

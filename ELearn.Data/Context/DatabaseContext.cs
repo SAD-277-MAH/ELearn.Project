@@ -37,5 +37,6 @@ namespace ELearn.Data.Context
         public DbSet<Document> Documents { get; set; }
         public DbSet<Exam> Exams { get; set; }
         public DbSet<ExamQuestion> ExamQuestions { get; set; }
+        public DbSet<ExamAnswer> ExamAnswers { get; set; }
     }
 }

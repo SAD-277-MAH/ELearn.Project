@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ELearn.Data.Dtos.Site.Exam;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -29,5 +30,7 @@ namespace ELearn.Data.Dtos.Site.Course
         [Display(Name = "زمان جلسه")]
         [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
         public string Time { get; set; }
+
+        public ExamForStatusDto ExamResult { get; set; }
     }
 }

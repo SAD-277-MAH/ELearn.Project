@@ -3,6 +3,7 @@ using ELearn.Common.Filters;
 using ELearn.Common.Helpers.Interface;
 using ELearn.Data.Context;
 using ELearn.Data.Dtos.Site.Course;
+using ELearn.Data.Dtos.Site.Exam;
 using ELearn.Data.Models;
 using ELearn.Presentation.Routes.V1;
 using ELearn.Repo.Infrastructure;
@@ -56,9 +57,24 @@ namespace ELearn.Presentation.Controllers.Site.V1.Sessions
                 return BadRequest("دسترسی به این دوره ندارید");
             }
 
-            var sessions = await _db.SessionRepository.GetAsync(s => s.CourseId == courseId && s.Course.TeacherId == userId, o => o.OrderBy(s => s.SessionNumber), "Course");
+            var sessions = await _db.SessionRepository.GetAsync(s => s.CourseId == courseId && s.Course.TeacherId == userId, o => o.OrderBy(s => s.SessionNumber), "Course,Exam");
 
             var sessionsForDetailed = _mapper.Map<List<SessionForDetailedDto>>(sessions);
+            if (User.HasClaim(ClaimTypes.Role, "Student"))
+            {
+                foreach (var session in sessionsForDetailed)
+                {
+                    var originalSession = sessions.Where(s => s.Id == session.Id).SingleOrDefault();
+                    if (originalSession?.Exam != null)
+                    {
+                        var examAnswer = await _db.ExamAnswerRepository.GetAsync(e => e.UserId == userId && e.ExamId == originalSession.Exam.Id, string.Empty);
+                        if (examAnswer == null || !examAnswer.Status)
+                        {
+                            session.VideoUrl = null;
+                        }
+                    }
+                }
+            }
 
             return Ok(sessionsForDetailed);
         }
@@ -86,6 +102,29 @@ namespace ELearn.Presentation.Controllers.Site.V1.Sessions
             if (session != null)
             {
                 var sessionForDetailed = _mapper.Map<SessionForDetailedDto>(session);
+                if (User.HasClaim(ClaimTypes.Role, "Student"))
+                {
+                    var exam = await _db.ExamRepository.GetAsync(e => e.SessionId == id, "ExamQuestions");
+                    if (exam != null)
+                    {
+                        var examAnswer = await _db.ExamAnswerRepository.GetAsync(e => e.UserId == userId && e.ExamId == exam.Id, string.Empty);
+                        if (examAnswer != null)
+                        {
+                            var examResult = new ExamForStatusDto()
+                            {
+                                Grade = examAnswer.Grade,
+                                PassingGrade = exam.PassingGrade,
+                                MaxGrade = exam.ExamQuestions.Count,
+                                Status = examAnswer.Status
+                            };
+                            sessionForDetailed.ExamResult = examResult;
+                        }
+                        if (examAnswer == null || !examAnswer.Status)
+                        {
+                            sessionForDetailed.VideoUrl = null;
+                        }
+                    }
+                }
 
                 return Ok(sessionForDetailed);
             }

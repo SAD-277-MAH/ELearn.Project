@@ -5,12 +5,14 @@ using ELearn.Data.Dtos.Site.Exam;
 using ELearn.Data.Models;
 using ELearn.Presentation.Routes.V1;
 using ELearn.Repo.Infrastructure;
+using ELearn.Services.Site.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ELearn.Presentation.Controllers.Site.V1.Exams
@@ -21,11 +23,13 @@ namespace ELearn.Presentation.Controllers.Site.V1.Exams
     {
         private readonly IUnitOfWork<DatabaseContext> _db;
         private readonly IMapper _mapper;
+        private readonly IOrderService _orderService;
 
-        public ExamController(IUnitOfWork<DatabaseContext> db, IMapper mapper)
+        public ExamController(IUnitOfWork<DatabaseContext> db, IMapper mapper, IOrderService orderService)
         {
             _db = db;
             _mapper = mapper;
+            _orderService = orderService;
         }
 
         [Authorize(Policy = "RequireTeacherRole")]
@@ -80,7 +84,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Exams
             return Ok(examForDetailed);
         }
 
-        [Authorize(Policy = "RequireTeacherRole")]
+        [Authorize(Policy = "RequireTeacherOrStudentRole")]
         [HttpGet(ApiV1Routes.Exam.GetExamForSession)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
         [ProducesResponseType(typeof(ExamForDetailedDto), StatusCodes.Status200OK)]
@@ -95,7 +99,11 @@ namespace ELearn.Presentation.Controllers.Site.V1.Exams
             }
 
             var session = await _db.SessionRepository.GetAsync(s => s.Id == exam.SessionId, "Course");
-            if (session.Course.TeacherId != userId)
+            if (User.HasClaim(ClaimTypes.Role, "Teacher") && session.Course.TeacherId != userId)
+            {
+                return Unauthorized("دسترسی غیر مجاز");
+            }
+            if (User.HasClaim(ClaimTypes.Role, "Student") && (!await _orderService.IsUserInCourseAsync(userId, session.CourseId)))
             {
                 return Unauthorized("دسترسی غیر مجاز");
             }
@@ -135,6 +143,81 @@ namespace ELearn.Presentation.Controllers.Site.V1.Exams
             {
                 var resultExam = _mapper.Map<ExamForDetailedDto>(newExam);
                 return CreatedAtRoute(nameof(GetExam), new { userId = userId, id = newExam.Id }, resultExam);
+            }
+            else
+            {
+                return BadRequest("خطا در ثبت اطلاعات");
+            }
+        }
+
+        [Authorize(Policy = "RequireStudentRole")]
+        [HttpPost(ApiV1Routes.Exam.TakeExam)]
+        [ServiceFilter(typeof(UserCheckIdFilter))]
+        [ProducesResponseType(typeof(ExamForStatusDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> TakeExam(string userId, string id, List<ExamForAnswerDto> dto)
+        {
+            var exam = await _db.ExamRepository.GetAsync(e => e.Id == id, "ExamQuestions");
+            if (exam == null)
+            {
+                return BadRequest("آزمون یافت نشد");
+            }
+
+            var session = await _db.SessionRepository.GetAsync(s => s.Id == exam.SessionId, "Course");
+            if (!await _orderService.IsUserInCourseAsync(userId, session.CourseId))
+            {
+                return Unauthorized("دسترسی غیر مجاز");
+            }
+
+            var examAnswer = await _db.ExamAnswerRepository.GetAsync(e => e.UserId == userId && e.ExamId == id, string.Empty);
+            if (examAnswer != null && examAnswer.Status)
+            {
+                return BadRequest("قبلا در آزمون شرکت کرده اید و نمره قبولی گرفته اید");
+            }
+
+            int grade = 0;
+            foreach (var answer in dto)
+            {
+                var examQuestion = exam.ExamQuestions.Where(e => e.Id == answer.ExamQuestionId).SingleOrDefault();
+                if (examQuestion != null && examQuestion.CorrectAnswer == answer.Answer)
+                {
+                    grade++;
+                }
+            }
+
+            bool hasPassed = grade >= exam.PassingGrade;
+            if (examAnswer == null)
+            {
+                examAnswer = new ExamAnswer()
+                {
+                    Grade = grade,
+                    Status = hasPassed,
+                    UserId = userId,
+                    ExamId = id
+                };
+
+                await _db.ExamAnswerRepository.AddAsync(examAnswer);
+            }
+            else if (grade > examAnswer.Grade || hasPassed)
+            {
+                examAnswer.Grade = grade;
+                examAnswer.Status = hasPassed;
+
+                _db.ExamAnswerRepository.Update(examAnswer);
+            }
+
+            if (await _db.SaveAsync())
+            {
+                var result = new ExamForStatusDto()
+                {
+                    Grade = grade,
+                    PassingGrade = exam.PassingGrade,
+                    MaxGrade = exam.ExamQuestions.Count,
+                    Status = hasPassed
+                };
+
+                return Ok(result);
             }
             else
             {

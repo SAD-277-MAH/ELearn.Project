@@ -135,6 +135,22 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
                 {
                     courseForDetailed.Sessions = _mapper.Map<List<SessionForDetailedDto>>(course.Sessions.OrderBy(s => s.SessionNumber));
                     courseForDetailed.Status = 1;
+
+                    if (User.HasClaim(ClaimTypes.Role, "Student"))
+                    {
+                        foreach (var session in courseForDetailed.Sessions)
+                        {
+                            var exam = await _db.ExamRepository.GetAsync(e => e.SessionId == session.Id, "ExamQuestions");
+                            if (exam != null)
+                            {
+                                var examAnswer = await _db.ExamAnswerRepository.GetAsync(e => e.UserId == User.FindFirst(ClaimTypes.NameIdentifier).Value && e.ExamId == exam.Id, string.Empty);
+                                if (examAnswer == null || !examAnswer.Status)
+                                {
+                                    session.VideoUrl = null;
+                                }
+                            }
+                        }
+                    }
                 }
                 else
                 {
