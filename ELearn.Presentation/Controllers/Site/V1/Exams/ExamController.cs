@@ -50,7 +50,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Exams
 
             var sessionIds = course.Sessions.Select(s => s.Id).ToList();
 
-            var exams = _mapper.Map<List<ExamForDetailedDto>>(await _db.ExamRepository.GetAsync(e => sessionIds.Contains(e.SessionId), null, string.Empty));
+            var exams = _mapper.Map<List<ExamForDetailedDto>>(await _db.ExamRepository.GetAsync(e => sessionIds.Contains(e.SessionId), null, "ExamQuestions"));
 
             return Ok(exams);
         }
@@ -63,7 +63,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Exams
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetExam(string userId, string id)
         {
-            var exam = await _db.ExamRepository.GetAsync(id);
+            var exam = await _db.ExamRepository.GetAsync(e => e.Id == id, "ExamQuestions");
             if (exam == null)
             {
                 return BadRequest("آزمون یافت نشد");
@@ -85,13 +85,13 @@ namespace ELearn.Presentation.Controllers.Site.V1.Exams
         [ServiceFilter(typeof(UserCheckIdFilter))]
         [ProducesResponseType(typeof(ExamForDetailedDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetExamForSession(string userId, string sessionId)
         {
-            var exam = await _db.ExamRepository.GetAsync(e => e.SessionId == sessionId, string.Empty);
+            var exam = await _db.ExamRepository.GetAsync(e => e.SessionId == sessionId, "ExamQuestions");
             if (exam == null)
             {
-                return BadRequest("آزمون یافت نشد");
+                return NotFound();
             }
 
             var session = await _db.SessionRepository.GetAsync(s => s.Id == exam.SessionId, "Course");
