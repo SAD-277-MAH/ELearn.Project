@@ -81,6 +81,31 @@ namespace ELearn.Presentation.Controllers.Site.V1.Exams
         }
 
         [Authorize(Policy = "RequireTeacherRole")]
+        [HttpGet(ApiV1Routes.Exam.GetExamForSession)]
+        [ServiceFilter(typeof(UserCheckIdFilter))]
+        [ProducesResponseType(typeof(ExamForDetailedDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetExamForSession(string userId, string sessionId)
+        {
+            var exam = await _db.ExamRepository.GetAsync(e => e.SessionId == sessionId, string.Empty);
+            if (exam == null)
+            {
+                return BadRequest("آزمون یافت نشد");
+            }
+
+            var session = await _db.SessionRepository.GetAsync(s => s.Id == exam.SessionId, "Course");
+            if (session.Course.TeacherId != userId)
+            {
+                return Unauthorized("دسترسی غیر مجاز");
+            }
+
+            var examForDetailed = _mapper.Map<ExamForDetailedDto>(exam);
+
+            return Ok(examForDetailed);
+        }
+
+        [Authorize(Policy = "RequireTeacherRole")]
         [HttpPost(ApiV1Routes.Exam.AddExam)]
         [ServiceFilter(typeof(UserCheckIdFilter))]
         [ServiceFilter(typeof(DocumentApproveFilter))]

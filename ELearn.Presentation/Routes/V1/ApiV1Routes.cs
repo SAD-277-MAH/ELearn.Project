@@ -272,14 +272,17 @@ namespace ELearn.Presentation.Routes.V1
         #region ExamRoutes
         public static class Exam
         {
-            // /api/v1/site/{userId}/exams/{courseId}
+            // /api/v1/site/{userId}/exams/courses/{courseId}
             // GET
-            public const string GetExams = BaseSite + "/{userId}/exams/{courseId}";
+            public const string GetExams = BaseSite + "/{userId}/exams/courses/{courseId}";
 
             // /api/v1/site/{userId}/exams/{id}
             // GET
             public const string GetExam = BaseSite + "/{userId}/exams/{id}";
 
+            // /api/v1/site/{userId}/exams/sessions/{sessionId}
+            // GET
+            public const string GetExamForSession = BaseSite + "/{userId}/exams/sessions/{sessionId}";
             // /api/v1/site/{userId}/exams
             // POST
             public const string AddExam = BaseSite + "/{userId}/exams";
