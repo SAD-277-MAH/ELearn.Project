@@ -8,6 +8,13 @@ namespace ELearn.Data.Models
 {
     public class ExamAnswer : BaseEntity<string>
     {
+        public ExamAnswer()
+        {
+            Id = Guid.NewGuid().ToString();
+            DateCreated = DateTime.Now;
+            DateModified = DateTime.Now;
+        }
+
         [Display(Name = "نمره")]
         [Range(0, int.MaxValue, ErrorMessage = "نمره آزمون باید بیشتر یا مساوی 0 باشد")]
         public int Grade { get; set; }
