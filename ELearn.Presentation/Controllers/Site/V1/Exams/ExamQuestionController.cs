@@ -227,7 +227,10 @@ namespace ELearn.Presentation.Controllers.Site.V1.Exams
                 return BadRequest("نمره قبولی پس از حذف سوال آزمون باید کمتر از تعداد سوالات باشد");
             }
 
-            _uploadService.RemoveFileFromLocal(_utilities.FindLocalPathFromUrl(examQuestion.FileUrl));
+            if (!string.IsNullOrEmpty(examQuestion.FileUrl))
+            {
+                _uploadService.RemoveFileFromLocal(_utilities.FindLocalPathFromUrl(examQuestion.FileUrl));
+            }
 
             _db.ExamQuestionRepository.Delete(examQuestion);
 
