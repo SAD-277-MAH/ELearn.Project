@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ELearn.Data.Dtos.Site.Users
 {
-    public class UserForRegisterStudentDto
+    public class UserForRegisterAdminDto
     {
         [Display(Name = "نام کاربری")]
         [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
@@ -33,15 +33,5 @@ namespace ELearn.Data.Dtos.Site.Users
         [MaxLength(10, ErrorMessage = "مقدار {0} نمی تواند بیشتر از {1} باشد")]
         [MinLength(10, ErrorMessage = "مقدار {0} نمی تواند کمتر از {1} باشد")]
         public string NationalCode { get; set; }
-
-        [Display(Name = "مقطع تحصیلی")]
-        [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
-        [MaxLength(50, ErrorMessage = "مقدار {0} نمی تواند بیشتر از {1} باشد")]
-        public string Grade { get; set; }
-
-        [Display(Name = "رشته تحصیلی")]
-        [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
-        [MaxLength(50, ErrorMessage = "مقدار {0} نمی تواند بیشتر از {1} باشد")]
-        public string Major { get; set; }
     }
 }

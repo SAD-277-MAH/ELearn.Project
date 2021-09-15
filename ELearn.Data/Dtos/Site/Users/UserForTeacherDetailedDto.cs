@@ -14,7 +14,7 @@ namespace ELearn.Data.Dtos.Site.Users
         [MaxLength(15, ErrorMessage = "مقدار {0} نمی تواند بیشتر از {1} باشد")]
         public string PhoneNumber { get; set; }
 
-        [Display(Name = "نام کاربری")]
+        [Display(Name = "ایمیل")]
         [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
         [MaxLength(200, ErrorMessage = "مقدار {0} نمی تواند بیشتر از {1} باشد")]
         public string Email { get; set; }

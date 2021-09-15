@@ -105,6 +105,7 @@ namespace ELearn.Presentation
                 option.AddPolicy("RequireTeacherRole", policy => policy.RequireRole("Teacher"));
                 option.AddPolicy("RequireStudentRole", policy => policy.RequireRole("Student"));
 
+                option.AddPolicy("RequireSystemOrAdminRole", policy => policy.RequireRole("System", "Admin"));
                 option.AddPolicy("RequireTeacherOrStudentRole", policy => policy.RequireRole("Teacher", "Student"));
 
                 option.AddPolicy("Access", policy => policy.RequireRole("System", "Admin", "Teacher", "Student"));

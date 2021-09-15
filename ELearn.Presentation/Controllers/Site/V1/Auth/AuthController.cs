@@ -171,6 +171,42 @@ namespace ELearn.Presentation.Controllers.Site.V1.Auth
             }
         }
 
+        [Authorize(Policy = "RequireSystemRole")]
+        [HttpPost(ApiV1Routes.Auth.RegisterAdmin)]
+        [ProducesResponseType(typeof(UserForAdminDetailedDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ErrorList), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> RegisterAdmin(UserForRegisterAdminDto dto)
+        {
+            var user = _mapper.Map<User>(dto);
+            user.PhotoUrl = "https://res.cloudinary.com/mahsad/image/upload/v1598432094/profile.png";
+
+            var result = await _userManager.CreateAsync(user, dto.Password);
+
+            if (result.Succeeded)
+            {
+                var userAddRole = await _userManager.FindByNameAsync(user.UserName);
+                await _userManager.AddToRolesAsync(userAddRole, new[] { "Admin" });
+
+                var registeredUser = _mapper.Map<UserForAdminDetailedDto>(userAddRole);
+                return CreatedAtRoute("GetAdmin", new { controller = "Admin", id = userAddRole.Id }, registeredUser);
+            }
+            else if (result.Errors.Any())
+            {
+                var returnMessage = new ErrorList();
+                foreach (var error in result.Errors)
+                {
+                    returnMessage.Errors.Add(error.Description);
+                }
+                return BadRequest(returnMessage);
+            }
+            else
+            {
+                var returnMessage = new ErrorList();
+                returnMessage.Errors.Add("خطا در ثبت نام");
+                return BadRequest(returnMessage);
+            }
+        }
+
         [HttpPost(ApiV1Routes.Auth.Login)]
         [ProducesResponseType(typeof(TokenForLoginResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]

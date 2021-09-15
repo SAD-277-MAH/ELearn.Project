@@ -35,6 +35,11 @@ namespace ELearn.Common.Utilities
                 {
                     opt.MapFrom(src => src.UserName);
                 });
+            CreateMap<UserForRegisterAdminDto, User>()
+                .ForMember(dest => dest.PhoneNumber, opt =>
+                {
+                    opt.MapFrom(src => src.UserName);
+                });
             CreateMap<User, UserForDetailedDto>();
             CreateMap<User, UserForStudentDetailedDto>()
                 .ForMember(dest => dest.Grade, opt =>
@@ -70,6 +75,7 @@ namespace ELearn.Common.Utilities
                 {
                     opt.MapFrom(src => src.Teacher.Status);
                 });
+            CreateMap<User, UserForAdminDetailedDto>();
 
             CreateMap<Teacher, TeacherForAdminDetailedDto>()
                 .ForMember(dest => dest.UserName, opt =>

@@ -30,6 +30,10 @@ namespace ELearn.Presentation.Routes.V1
             // POST
             public const string RegisterTeacher = BasePanel + "/auth/register/teacher";
 
+            // /api/v1/panel/auth/register/admin
+            // POST
+            public const string RegisterAdmin = BasePanel + "/auth/register/admin";
+
             // /api/v1/panel/auth/login
             // POST
             public const string Login = BasePanel + "/auth/login";
@@ -100,6 +104,15 @@ namespace ELearn.Presentation.Routes.V1
             // /api/v1/panel/teachers/{id}
             // GET
             public const string GetTeacher = BasePanel + "/teachers/{id}";
+        }
+        #endregion
+
+        #region AdminRoutes
+        public static class Admin
+        {
+            // /api/v1/panel/admins/{id}
+            // GET
+            public const string GetAdmin = BasePanel + "/admins/{id}";
         }
         #endregion
 

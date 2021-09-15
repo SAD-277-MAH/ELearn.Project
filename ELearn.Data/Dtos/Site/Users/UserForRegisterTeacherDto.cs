@@ -15,7 +15,7 @@ namespace ELearn.Data.Dtos.Site.Users
 
         [Display(Name = "رمز عبور")]
         [Required(ErrorMessage = "مقدار {0} را وارد کنید")]
-        [StringLength(maximumLength: 10, MinimumLength = 4, ErrorMessage = "رمز عبور باید بین ۴ تا ۱۰ کاراکتر باشد")]
+        [StringLength(maximumLength: 100, MinimumLength = 4, ErrorMessage = "رمز عبور باید بین ۴ تا ۱۰۰ کاراکتر باشد")]
         public string Password { get; set; }
 
         [Display(Name = "نام")]
