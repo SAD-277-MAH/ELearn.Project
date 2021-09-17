@@ -46,7 +46,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Users
             return Ok(documentsForDetailed);
         }
 
-        [Authorize]
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpGet(ApiV1Routes.Document.GetDocumentsForAdmin)]
         [ProducesResponseType(typeof(DocumentForAdminCompleteDetailedDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetDocumentsForAdmin(string userId)
@@ -132,7 +132,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Users
             }
         }
 
-        [Authorize]
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpPatch(ApiV1Routes.Document.UpdateDocumentStatus)]
         [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]

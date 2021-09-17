@@ -41,7 +41,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
             return Ok(commentsDetailed);
         }
 
-        [Authorize]
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpGet(ApiV1Routes.Comment.GetCommentsForAdmin)]
         [ProducesResponseType(typeof(List<CommentForAdminDetailedDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetCommentsForAdmin([FromQuery] PaginationDto pagination, [FromQuery] int? status)
@@ -96,7 +96,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
             return Ok();
         }
 
-        [Authorize]
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpPatch(ApiV1Routes.Comment.UpdateCommentStatus)]
         [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]

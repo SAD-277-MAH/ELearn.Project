@@ -55,7 +55,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
             return Ok(coursesForDetailed);
         }
 
-        [Authorize]
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpGet(ApiV1Routes.Course.GetCoursesForAdmin)]
         [ProducesResponseType(typeof(List<CourseForAdminDetailedDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetCoursesForAdmin([FromQuery] PaginationDto pagination, [FromQuery] int? status)
@@ -321,7 +321,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
             }
         }
 
-        [Authorize]
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpPatch(ApiV1Routes.Course.UpdateCourseStatus)]
         [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
@@ -351,7 +351,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Courses
             }
         }
 
-        [Authorize]
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpDelete(ApiV1Routes.Course.DeleteCourse)]
         [ProducesResponseType(typeof(void), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]

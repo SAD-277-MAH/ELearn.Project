@@ -31,7 +31,7 @@ namespace ELearn.Presentation.Controllers.Site.V1.Users
             _mapper = mapper;
         }
 
-        [Authorize]
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpGet(ApiV1Routes.Teacher.GetTeachersForAdmin)]
         [ProducesResponseType(typeof(List<TeacherForAdminDetailedDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetTeachersForAdmin([FromQuery] PaginationDto pagination, [FromQuery] int? status)
